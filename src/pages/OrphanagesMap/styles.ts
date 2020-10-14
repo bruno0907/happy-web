@@ -79,6 +79,6 @@ export const AddButton = styled.div`
   }
 
   :hover{
-    opacity: .7;
+    filter: brightness(110%);
   }
 `
