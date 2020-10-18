@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { FiPlus, FiArrowRight } from 'react-icons/fi'
 import { Map, TileLayer, Marker, Popup } from 'react-leaflet'
 
-
 import './map-popup--styles.css'
 
 import { 
@@ -29,14 +28,25 @@ interface OrphanageProps {
 
 const OrphanagesMap = () => {
   const [theme, setTheme] = useState('light-v10')
-
   const [orphanages, setOrphanages] = useState<OrphanageProps[]>([])
+  const [location, setLocation] = useState({
+    latitude: 0,
+    longitude: 0
+  })
 
+  
   useEffect(() => {
+    
     api.get('/')
-      .then(response => setOrphanages(response.data))
-      .catch(error => console.error(error.message))
-  });
+    .then(response => setOrphanages(response.data))
+    .catch(error => console.error(error.message))  
+  
+    navigator.geolocation.getCurrentPosition(position => {
+      const { latitude, longitude } = position.coords
+      setLocation({latitude, longitude})
+    })
+    
+  }, []);
 
   return (
     <Container>
@@ -50,9 +60,9 @@ const OrphanagesMap = () => {
           <strong>Balneário Camboriú</strong>
           <span>Santa Catarina</span>
         </Location>
-      </SideBar>
+      </SideBar>      
       <Map 
-        center={[-26.9905831,-48.6288651]}
+        center={[location.latitude,location.longitude]}
         zoom={15}
         style={{width: '100%', height: '100%'}}
       >  
