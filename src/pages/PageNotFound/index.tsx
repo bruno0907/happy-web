@@ -2,8 +2,10 @@ import React from 'react';
 
 // import { Container } from './styles';
 
-const PageNotFound: React.FC = () => {
-  return <div />;
+const PageNotFound = () => {
+  return(
+    <h1>Page not found</h1>
+  );
 }
 
 export default PageNotFound;

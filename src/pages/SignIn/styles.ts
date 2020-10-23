@@ -1,80 +1,50 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  width: 100%;
-  max-width: 620px;
-  min-height: 100vh;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+`;
+
+export const Hero = styled.aside`
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 80px;  
+  background: var(--color-bg-gradient);
+`
+
+export const FormAside = styled.main`
+  width: 100%;
+  max-width: 650px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;   
   color: var(--color-text-base);
   background: var(--color-text-white);
-  
-    h1{
-      font-size: 32px;
-      font-weight: 700;
-      line-height: 250%;
-    }
-
-    p{
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 30px;
-    }
 
     form{
-      width: 100%;
-      max-width: 360px;
+      width: 75%;
       display: flex;
       flex-direction: column;
+      align-items: center;
+      justify-content: center;
 
-      fieldset{
-        display: flex;
-        flex-direction: column;
-        border: none;
-      }
+        fieldset{
+          width: 100%;
+          border: none;          
+
+          legend{
+            font-size: 32px;
+            line-height: 34px;            
+            font-weight: 700;
+            margin-bottom: 24px;
+          }
+        }
     }
-`;
-
-export const GoBack = styled.button`
-  position: absolute;
-  top: 80px;
-  right: 80px;
-  width: 48px;
-  height: 48px;  
-  border-radius: 16px;  
-  border: none;
-  background: var(--color-bg-light);
-  display: flex;
-  align-items: center;
-  justify-content: center;  
-  cursor: pointer;
-  transition: filter 0.1s;
-
-    &:hover{      
-      filter: brightness(95%);
-    }
-`
-export const Submit = styled.button`
-  background: var(--color-green);
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 20px;
-  border: none;
-  color: #FFFFFF;
-  font-weight: 700;
-  opacity: 0.6;  
-  cursor: pointer;
-  margin-top: 10px;
-  transition: background 0.2s;
-
-    &:hover{
-      opacity: 1;
-    } 
 `
 
 export const RememberMe = styled.div`
@@ -83,7 +53,7 @@ export const RememberMe = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  margin: 10px 0 20px;
+  margin-bottom: 40px;
   color: var(--color-text-complement);
 
     label{
@@ -146,5 +116,25 @@ export const RememberMe = styled.div`
       &:hover{
         filter: brightness(80%);
       }
+    }
+`
+
+export const GoBack = styled.button`
+  position: absolute;
+  top: 80px;
+  right: 80px;
+  width: 48px;
+  height: 48px;  
+  border-radius: 16px;  
+  border: none;
+  background: var(--color-bg-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;  
+  cursor: pointer;
+  transition: filter 0.1s;
+
+    &:hover{      
+      filter: brightness(95%);
     }
 `

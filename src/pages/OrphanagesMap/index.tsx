@@ -24,10 +24,11 @@ interface OrphanageProps {
   name: string;
   latitude: number;
   longitude: number;
+  approved: boolean;
 }
 
 const OrphanagesMap = () => {
-  const [theme, setTheme] = useState('light-v10')
+  const [theme, setTheme] = useState('light-v10')  
   const [orphanages, setOrphanages] = useState<OrphanageProps[]>([])
   const [location, setLocation] = useState({
     latitude: 0,
@@ -37,8 +38,12 @@ const OrphanagesMap = () => {
   
   useEffect(() => {
     
-    api.get('/')
-    .then(response => setOrphanages(response.data))
+    api.get('/orphanages')
+    .then(response => {
+      const { data } = response
+      const orphanagesToShow = data.filter((orphanage: OrphanageProps) => orphanage.approved === true)
+      setOrphanages(orphanagesToShow)
+    })
     .catch(error => console.error(error.message))  
   
     navigator.geolocation.getCurrentPosition(position => {
@@ -85,12 +90,10 @@ const OrphanagesMap = () => {
           </Marker>
         ))}
 
-      </Map>
-      <Link to="/orphanages/create">
-        <AddButton>
-          <FiPlus />
-        </AddButton>
-      </Link>
+      </Map>      
+      <AddButton as={Link} to="/orphanages/create">
+        <FiPlus />
+      </AddButton>      
     </Container>
   );
 }

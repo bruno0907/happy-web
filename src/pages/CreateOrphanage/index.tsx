@@ -18,6 +18,9 @@ const CreateOrphanage = () => {
   const [location, setLocation] = useState({ latitude: 0, longitude: 0})
   
   const name = useRef<HTMLInputElement>(null)
+  const email = useRef<HTMLInputElement>(null)
+  const password = useRef<HTMLInputElement>(null)
+  const password_verify = useRef<HTMLInputElement>(null)
   const about = useRef<HTMLTextAreaElement>(null)
   const whatsapp = useRef<HTMLInputElement>(null)
   const [images, setImages] = useState<File[]>([])
@@ -67,6 +70,9 @@ const CreateOrphanage = () => {
 
     if(
       !name.current?.value ||       
+      !email.current?.value ||       
+      !password.current?.value ||       
+      !password_verify.current?.value ||       
       !about.current?.value ||
       !whatsapp.current?.value ||
       !instructions.current?.value ||
@@ -76,6 +82,9 @@ const CreateOrphanage = () => {
     }
 
     data.append('name', name.current?.value)
+    data.append('email', email.current?.value)
+    data.append('password', password.current?.value)
+    data.append('password_verify', password_verify.current?.value)
     data.append('latitude', String(latitude))
     data.append('longitude', String(longitude))
     data.append('about', about.current?.value)
@@ -89,7 +98,7 @@ const CreateOrphanage = () => {
     api.post('orphanages', data)
       .then(response => {
         console.log(response.data)
-        history.push('/orphanages')
+        history.push('/orphanages/create/success')
       })
       .catch(error => {
         alert('Houve um erro com seu cadastro')
@@ -107,8 +116,7 @@ const CreateOrphanage = () => {
             <legend>Dados</legend>
 
             <Map 
-              center={[location.latitude,location.longitude]} 
-              // center={[-26.9902245,-48.6714307]} 
+              center={[location.latitude,location.longitude]}               
               style={{ width: '100%', height: 280 }}
               zoom={15}
               onClick={handleMapClick}
@@ -128,6 +136,21 @@ const CreateOrphanage = () => {
             <div className="input-block">
               <label htmlFor="name">Nome</label>
               <input id="name" ref={name}/>
+            </div>
+
+            <div className="input-block">
+              <label htmlFor="email">Email</label>
+              <input id="email" type="email" ref={email}/>
+            </div>
+
+            <div className="input-block">
+              <label htmlFor="password">Senha</label>
+              <input id="password" type="password" ref={password}/>
+            </div>
+
+            <div className="input-block">
+              <label htmlFor="password_verify">Repita sua Senha</label>
+              <input id="password_verify" type="password" ref={password_verify}/>
             </div>
 
             <div className="input-block">

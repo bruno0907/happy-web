@@ -6,15 +6,14 @@ import Landing from './pages/Landing'
 import OrphanagesMap from './pages/OrphanagesMap'
 import Orphanages from './pages/Orphanages'
 import CreateOrphanage from './pages/CreateOrphanage'
-import SignIn from './pages/AppPages/SignIn'
+import SignIn from './pages/SignIn'
 
-import PasswordForgot from './pages/AppPages/PasswordForgot'
-import NewPassword from './pages/AppPages/NewPassword'
+import PasswordForgot from './pages/PasswordForgot'
+import NewPassword from './pages/NewPassword'
 
-
-
-import PageSuccess from './pages/RegisterSuccessPage'
+import PageSuccess from './pages/RegisterSuccess'
 import PageNotFound from './pages/PageNotFound'
+import Dashboard from './pages/Dashboard'
 
 const Routes = () => {
   return (
@@ -26,10 +25,12 @@ const Routes = () => {
         <Route path="/orphanages/:id" exact component={Orphanages} />
 
         <Route path="/app/sign-in"  component={SignIn} />
+        <Route path="/app/dashboard"  component={Dashboard} />
+
         <Route path="/app/password-forgot"  component={PasswordForgot} />
         <Route path="/app/new-password"  component={NewPassword} />
 
-        <Route path="/orphanages/success" component={PageSuccess} />
+        <Route path="/orphanages/create/success" component={PageSuccess} />
 
         <Route component={PageNotFound} />
       </Switch>

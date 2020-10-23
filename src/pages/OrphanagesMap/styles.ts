@@ -57,7 +57,7 @@ export const Map = styled.main`
   height: 100%;  
 `
 
-export const AddButton = styled.div`
+export const AddButton = styled.a`
   position: absolute;  
   right: 50px;
   bottom: 50px;

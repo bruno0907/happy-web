@@ -62,20 +62,32 @@ export const ContentMain = styled.div`
   }
 `
 
-export const Location = styled.div`  
+export const EnterRestrictAreaButton = styled.a`  
   right: 0;
-  top: 0;  
-  font-size: 24px;
-  line-height: 34px;
-  text-align: right;
+  top: 0;
+  width: 222;
+  height: 56;
+  background: #12D4E0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 800;
+  border: none;
+  border-radius: 20px;
+  color: var(--color-text-white);
+  text-decoration: none;
+  padding: 13px 40px;
+  transition: all .2s;
+  
+    &:hover{      
+      background: #96FEFF;
+      color: #15C3D6;
+    }
 
-  strong{
-    font-weight: 800;
-    display: block;
-  }
 `
 
-export const EnterAppButton = styled.div`  
+export const EnterAppButton = styled.a`  
   right: 0;
   bottom: 0;
   width: 80px;

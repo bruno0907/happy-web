@@ -10,7 +10,7 @@ import {
   RightSide,
   Logo,
   ContentMain,
-  Location,
+  EnterRestrictAreaButton,
   EnterAppButton
 } from './styles'
 
@@ -27,16 +27,11 @@ const Landing = () => {
             <p>Visite orfanatos e mude o dia de muitas crianças.</p>
           </ContentMain>
         </LeftSide>
-        <RightSide>
-          <Location>
-            <strong>Balneário Camboriú</strong>
-            <span>Santa Catarina</span>
-          </Location>
-          <Link to="/orphanages">
-            <EnterAppButton>
-              <FiArrowRight />
-            </EnterAppButton>
-          </Link>
+        <RightSide>          
+          <EnterRestrictAreaButton as={Link} to="/app/sign-in">Acesso Restrito</EnterRestrictAreaButton>                    
+          <EnterAppButton as={Link} to="/orphanages">
+            <FiArrowRight />
+          </EnterAppButton>          
         </RightSide>
       </ContentWrapper>
     </Container>
