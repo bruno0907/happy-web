@@ -18,38 +18,40 @@ import Happy from '../../assets/images/logo.svg'
 import { api } from '../../services/api';
 
 const NewPassword = () => {
-  const history = useHistory()  
-
-  // const location = useLocation()
-
-  // console.log(location.key)
-
-  const [email, setEmail] = useState('')  
+  const history = useHistory()    
+  const location = useLocation()
+  const { search } = location    
+  
   const [password, setPassword] = useState('')  
-  const [password_verify, setPasswordVerify] = useState('')    
+  const [password_verify, setPasswordVerify] = useState('')   
+  
+  const token = search.slice((search.indexOf('=')) + 1)  
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
 
-    const data = {
-      email,
+    const data = {      
       password,
-      password_verify
+      password_verify,
+      token
     }
 
-    api.post('', data)
-      .then(() => history.push('app/sign-in'))
-      .catch(error => console.log(error.message))
+    api.patch('app/admin/new-password', data)
+      .then(() => history.push('sign-in'))
+      .catch(error => {
+        console.log(error.message)
+        alert('Deu ruim, verifique o erro')
+      })
   }
 
-  return (
+  return (    
     <Container>
       <Hero>
         <img src={Happy} alt="Happy" />
       </Hero>
-      
+
       <FormAside>
-        <GoBack onClick={handleSubmit}>
+        <GoBack onClick={() => history.goBack()}>
           <FiArrowLeft size={24} color="15C3D6" />
         </GoBack>
         <form  onSubmit={handleSubmit}>
@@ -62,15 +64,15 @@ const NewPassword = () => {
               name="password"
               type="password" 
               value={password}   
-              onChange={event => setPassword(event.target.value)}
-            />
+              onChange={event => setPassword(event.target.value)}              
+            />            
 
             <Input 
               label="Repetir senha"
               name="password_verify"
               type="password" 
               value={password_verify}   
-              onChange={event => setPasswordVerify(event.target.value)}
+              onChange={event => setPasswordVerify(event.target.value)}              
             />
 
             <Button label="Enviar" />

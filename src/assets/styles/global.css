@@ -11,7 +11,9 @@
   --color-input-fill: #F5F8FA;
   --color-green: #37C77F;
   --color-delete: #FF669D;
-  --color-button-in-gradient: #12AFCB;
+  --color-button-in-gradient: #12AFCB;  
+  --color-sidebar: #15C3D6;
+  --color-button-yellow: #FFD666;  
 }
 
 *{
