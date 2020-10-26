@@ -4,11 +4,12 @@ import { Container } from './styles';
 
 interface ButtonProps{
   label: string;  
+  disabled?: boolean;
 }
 
-const Button = ({ label, ...rest }: ButtonProps) => {
+const Button = ({ label, disabled, ...rest }: ButtonProps) => {
   return(
-    <Container {...rest}>{label}</Container>
+    <Container {...rest} disabled={disabled}>{label}</Container>
   )
 }
 

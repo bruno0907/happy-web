@@ -5,8 +5,24 @@ import { Map, Marker, TileLayer } from "react-leaflet";
 import { useParams } from 'react-router-dom'
 
 import Sidebar from '../../components/Sidebar'
+import Divider from '../../components/Divider'
 
-import './styles.css';
+import { 
+  Container,
+  Main,
+  OrphanageDetails,
+  ImageGallery,
+  ImageGalleryButtons,
+  OrphanageDetailsContent,
+  MapContainer,
+  InstructionTitle,
+  InstructionDetails,
+  OrphanageOpenDetails,
+  OpeningHours,
+  OpenOnWeekends,
+  DontOpenOnWeekends,
+  ContactButton
+} from './styles'
 
 import { happyMapIcon } from '../../utils/mapIcon'
 
@@ -35,6 +51,8 @@ export default function Orphanage() {
   const params = useParams<OrphanageParams>()
   const [orphanage, setOrphanage] = useState<OrphanageProps>()
   const [activeImageIndex, setActiveImageIndex] = useState(0)
+  
+  const googleMapsLink = 'https://www.google.com/maps/dir/?api=1&destination='
 
   useEffect(() => {
     api.get(`orphanages/${params.id}`)
@@ -46,35 +64,33 @@ export default function Orphanage() {
     return <p>Carregando...</p>
   }
 
-  const googleMapsLink = 'https://www.google.com/maps/dir/?api=1&destination='
-
   return (
-    <div id="page-orphanage">      
+    <Container>      
       
       <Sidebar />
 
-      <main>
-        <div className="orphanage-details">
+      <Main>
+        <OrphanageDetails>
           <img src={orphanage.images[activeImageIndex].url} alt={orphanage.name} />
 
-          <div className="images">
+          <ImageGallery>
             {orphanage.images.map((image, index) => (
-              <button 
-                key={image.id} 
-                className={activeImageIndex === index ? 'active' : ''} 
+              <ImageGalleryButtons 
+                key={image.id}                 
+                active={activeImageIndex === index ? true : false}
                 type="button" 
                 onClick={() => setActiveImageIndex(index)}
               >
                 <img src={image.url} alt={orphanage.name} />
-              </button>
+              </ImageGalleryButtons>
             ))}           
-          </div>
+          </ImageGallery>
           
-          <div className="orphanage-details-content">
+          <OrphanageDetailsContent>
             <h1>{orphanage.name}</h1>
             <p>{orphanage.about}</p>
 
-            <div className="map-container">
+            <MapContainer>
               <Map 
                 center={[orphanage.latitude, orphanage.longitude]} 
                 zoom={16} 
@@ -94,48 +110,48 @@ export default function Orphanage() {
               <footer>
                 <a target="_blank" rel="noopener noreferrer" href={`${googleMapsLink}${orphanage.latitude},${orphanage.longitude}`}>Ver rotas no Google Maps</a>
               </footer>
-            </div>
+            </MapContainer>
 
-            <hr />
+            <Divider />
 
-            <h2>Instruções para visita</h2>
-            <p>{orphanage.instructions}</p>
+            <InstructionTitle>Instruções para visita</InstructionTitle>
+            <InstructionDetails>{orphanage.instructions}</InstructionDetails>
 
-            <div className="open-details">
-              <div className="hour">
+            <OrphanageOpenDetails>
+              <OpeningHours>
                 <FiClock size={32} color="#15B6D6" />
                 Segunda à Sexta <br />
                 {orphanage.opening_hours}
-              </div>
+              </OpeningHours>
               { orphanage.open_on_weekends 
                 ? (
-                    <div className="open-on-weekends">
+                    <OpenOnWeekends>
                       <FiInfo size={32} color="#39CC83" />
                       Atendemos <br />
                       fim de semana
-                    </div>
+                    </OpenOnWeekends>
                 )
                 : (
-                    <div className="open-on-weekends dont-open">
+                    <DontOpenOnWeekends>
                       <FiInfo size={32} color="#FF669D" />
                       Não atendemos <br />
                       fim de semana
-                    </div>
+                    </DontOpenOnWeekends>
                   )
               }
-            </div>
+            </OrphanageOpenDetails>
 
-            <a href={`https://api.whatsapp.com/send?phone=55${orphanage.whatsapp}&text=Olá ${orphanage.name}. Quero visitar vocês!`}
+            <ContactButton href={`https://api.whatsapp.com/send?phone=55${orphanage.whatsapp}&text=Olá ${orphanage.name}. Quero visitar vocês!`}
               target="_blank"
               rel="noopener noreferrer"
               className="contact-button"              
             >
               <FaWhatsapp size={20} color="#FFF" />
               Entrar em contato
-            </a>
-          </div>
-        </div>
-      </main>
-    </div>
+            </ContactButton>
+          </OrphanageDetailsContent>
+        </OrphanageDetails>
+      </Main>
+    </Container>
   );
 }

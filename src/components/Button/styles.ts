@@ -1,6 +1,10 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-export const Container = styled.button`
+interface ButtonProps{
+  disabled?: boolean;
+}
+
+export const Container = styled.button<ButtonProps>`
   background: var(--color-green);
   width: 100%;
   height: 64px;  
@@ -17,5 +21,9 @@ export const Container = styled.button`
 
     &:hover{
       opacity: 1;
-    }   
+    }
+    
+  ${props => props.disabled && css`
+    pointer-events: none;
+  `}
 `;

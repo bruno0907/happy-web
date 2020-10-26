@@ -1,32 +1,47 @@
-import React, { useState, useRef, FormEvent, ChangeEvent, useEffect } from "react";
+import React, { useState, FormEvent, ChangeEvent, useEffect } from "react";
 import { useHistory } from 'react-router-dom'
 import { Map, Marker, TileLayer } from 'react-leaflet';
 import { LeafletMouseEvent } from 'leaflet'
 
-import { FiPlus, FiX } from "react-icons/fi";
+import { FiPlus } from "react-icons/fi";
 
 import Sidebar from "../../components/Sidebar";
+import Textarea from "../../components/Textarea";
+import Input from "../../components/Input";
+import Button from "../../components/Button";
 
-import './styles.css';
+import {
+  Container,
+  Content,
+  Title,
+  CreateOrphanageForm,
+  FormSection,
+  ImageSection,
+  ImagesContainer,
+  AddImage,
+  OpenOnWeekendsSection,
+  OpenOnWeekendsOptions,
+} from './styles'
 
 import { happyMapIcon } from '../../utils/mapIcon'
 import { api } from "../../services/api";
 
 const CreateOrphanage = () => {
   const history = useHistory()
-  const [position, setPosition] = useState({ latitude: 0, longitude: 0})
+  // Geolocation location state
   const [location, setLocation] = useState({ latitude: 0, longitude: 0})
   
-  const name = useRef<HTMLInputElement>(null)
-  const email = useRef<HTMLInputElement>(null)
-  const password = useRef<HTMLInputElement>(null)
-  const password_verify = useRef<HTMLInputElement>(null)
-  const about = useRef<HTMLTextAreaElement>(null)
-  const whatsapp = useRef<HTMLInputElement>(null)
+  // Form States
+  const [position, setPosition] = useState({ latitude: 0, longitude: 0})
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [password_verify, setPasswordVerify] = useState('')
+  const [about, setAbout] = useState('')
+  const [whatsapp, setWhatsapp] = useState('')
   const [images, setImages] = useState<File[]>([])
-  const instructions = useRef<HTMLTextAreaElement>(null)
-  const opening_hours = useRef<HTMLInputElement>(null)
-  
+  const [instructions, setInstructions] = useState('')
+  const [opening_hours, setOpeningHours] = useState('')
   const [open_on_weekends, setOpenOnWeekends] = useState(true)
 
   const [imagesPreview, setImagesPreview] = useState<string[]>([])
@@ -68,53 +83,37 @@ const CreateOrphanage = () => {
     const { latitude, longitude } = position
     const data = new FormData()
 
-    if(
-      !name.current?.value ||       
-      !email.current?.value ||       
-      !password.current?.value ||       
-      !password_verify.current?.value ||       
-      !about.current?.value ||
-      !whatsapp.current?.value ||
-      !instructions.current?.value ||
-      !opening_hours.current?.value
-      ){
-      return
-    }
-
-    data.append('name', name.current?.value)
-    data.append('email', email.current?.value)
-    data.append('password', password.current?.value)
-    data.append('password_verify', password_verify.current?.value)
+    data.append('name', name)
+    data.append('email', email)
+    data.append('password', password)
+    data.append('password_verify', password_verify)
     data.append('latitude', String(latitude))
     data.append('longitude', String(longitude))
-    data.append('about', about.current?.value)
-    data.append('whatsapp', whatsapp.current?.value)
-    data.append('instructions', instructions.current?.value)
-    data.append('opening_hours', opening_hours.current?.value)
+    data.append('about', about)
+    data.append('whatsapp', whatsapp)
+    data.append('instructions', instructions)
+    data.append('opening_hours', opening_hours)
     data.append('open_on_weekends', String(open_on_weekends))
 
     images.forEach(image => data.append('images', image))
 
     api.post('orphanages', data)
-      .then(response => {
-        console.log(response.data)
+      .then(() => {        
         history.push('/orphanages/create/success')
       })
-      .catch(error => {
-        alert('Houve um erro com seu cadastro')
-        console.error(error.message)
-      })
+      .catch(() => {
+        alert('Houve um erro com seu cadastro')        
+      })    
   }
 
   return (
-    <div id="page-create-orphanage">
-      <Sidebar />      
-
-      <main>
-        <form className="create-orphanage-form" onSubmit={handleSubmit}>
-          <fieldset>
-            <legend>Dados</legend>
-
+    <Container>
+      <Sidebar />  
+      <Content>
+        <Title>Adicione um novo orfanato</Title>
+        <CreateOrphanageForm onSubmit={handleSubmit}>
+          <FormSection>
+            <legend>Dados</legend>          
             <Map 
               center={[location.latitude,location.longitude]}               
               style={{ width: '100%', height: 280 }}
@@ -132,82 +131,82 @@ const CreateOrphanage = () => {
                 />              
               }
             </Map>
-
-            <div className="input-block">
-              <label htmlFor="name">Nome</label>
-              <input id="name" ref={name}/>
-            </div>
-
-            <div className="input-block">
-              <label htmlFor="email">Email</label>
-              <input id="email" type="email" ref={email}/>
-            </div>
-
-            <div className="input-block">
-              <label htmlFor="password">Senha</label>
-              <input id="password" type="password" ref={password}/>
-            </div>
-
-            <div className="input-block">
-              <label htmlFor="password_verify">Repita sua Senha</label>
-              <input id="password_verify" type="password" ref={password_verify}/>
-            </div>
-
-            <div className="input-block">
-              <label htmlFor="about">Sobre <span>Máximo de 300 caracteres</span></label>
-              <textarea id="name" maxLength={300} ref={about}/>
-            </div>
-
-            <div className="input-block">
-              <label htmlFor="name">Número de Whatsapp</label>
-              <input id="name" ref={whatsapp}/>
-            </div>
-
-            <div className="input-block">
+            <Input 
+              label="Nome do Orfanato"
+              name="name"
+              value={name}
+              onChange={event => setName(event.target.value)}
+            />
+            <Input 
+              label="E-mail"
+              name="email"
+              type="email"
+              value={email}
+              onChange={event => setEmail(event.target.value)}
+            />
+            <Input 
+              label="Senha"
+              name="password"
+              type="password"
+              value={password}
+              onChange={event => setPassword(event.target.value)}
+            />
+            <Input 
+              label="Repita sua senha"
+              name="password_verify"
+              type="password"
+              value={password_verify}
+              onChange={event => setPasswordVerify(event.target.value)}
+            />
+            <Textarea 
+              label="Sobre"
+              description="Máximo de 300 caracteres"
+              name="about"
+              value={about}
+              onChange={event => setAbout(event.target.value)}
+            />
+            <Input 
+              label="Número do whatsapp"
+              type="number"
+              name="whatsapp"
+              value={whatsapp}
+              onChange={event => setWhatsapp(event.target.value)}
+            />
+            <ImageSection>
               <label htmlFor="images">Fotos</label>
-
-              <div className="images-container">
-                {imagesPreview.map(image => {
-                  return (
-                    <div key={image}>                    
-                      <img src={image} alt={image} />  
-                      <button>
-                        <FiX size={24} color="#FF669D" /> 
-                      </button>                    
-                    </div>
-                  )
-                })}
-                <label htmlFor="image[]" className="new-image">
+              <ImagesContainer>
+                {imagesPreview.map(image => 
+                  <img key={image} src={image} alt={image} /> 
+                )}
+                <AddImage htmlFor="image[]">
                   <FiPlus size={24} color="#15b6d6" />
-                </label>
-              </div>
+                </AddImage>
               <input 
                 multiple 
                 type="file" 
                 id="image[]"
                 onChange={handleSelectImages}
               />
-
-            </div>
-          </fieldset>
-
-          <fieldset>
+              </ImagesContainer>
+            </ImageSection>
+          </FormSection>
+          <FormSection>
             <legend>Visitação</legend>
-
-            <div className="input-block">
-              <label htmlFor="instructions">Instruções</label>
-              <textarea id="instructions" ref={instructions}/>
-            </div>
-
-            <div className="input-block">
-              <label htmlFor="opening_hours">Horário das visitas</label>
-              <input id="opening_hours" ref={opening_hours}/>
-            </div>
-
-            <div className="input-block">
+            <Textarea 
+              label="Instruções"
+              name="instructions"
+              value={instructions}
+              onChange={event => setInstructions(event.target.value)}
+            />
+            <Input 
+              label="Horário de vistas"
+              name="opening_hours"
+              value={opening_hours}
+              onChange={event => setOpeningHours(event.target.value)}
+            />
+            <OpenOnWeekendsSection>
               <label htmlFor="open_on_weekends">Atende fim de semana</label>
-
-              <div className="button-select">
+              <OpenOnWeekendsOptions>
                 <button 
                   type="button" 
                   className={open_on_weekends ? 'active' : ''}
@@ -218,16 +217,13 @@ const CreateOrphanage = () => {
                   className={!open_on_weekends ? 'active' : ''}
                   onClick={() => setOpenOnWeekends(prevState => !prevState)}
                 >Não</button>
-              </div>
-            </div>
-          </fieldset>
-
-          <button className="confirm-button" type="submit">
-            Confirmar
-          </button>
-        </form>
-      </main>
-    </div>
+              </OpenOnWeekendsOptions>
+            </OpenOnWeekendsSection>
+          </FormSection>
+          <Button label="Confirmar" disabled={position.latitude > 0 ? false : true}/>
+        </CreateOrphanageForm>
+      </Content>
+    </Container>
   );
 }
 

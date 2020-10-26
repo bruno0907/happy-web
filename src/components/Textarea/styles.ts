@@ -16,9 +16,16 @@ export const Container = styled.div`
     color: #8FA7B3;
     margin-bottom: 8px;
     line-height: 24px;
+
+      span{
+        font-size: 14px;
+        color: #8FA7B3;
+        margin-left: 24px;
+        line-height: 24px;
+      }
   }
   
-  input{
+  textarea{
     width: 100%;
     border-radius: 20px;
     padding: 21px 24px;    
@@ -26,6 +33,9 @@ export const Container = styled.div`
     background: var(--color-input-fill);
     color: var(--color-text-base);
     transition: border-color 0.1s;    
+    min-height: 120px;
+    max-height: 240px;
+    resize: vertical;
 
       &:focus{
         border-color: var(--color-green);
@@ -37,21 +47,7 @@ export const Container = styled.div`
 
       &:not(:placeholder-shown){
         border-color: var(--color-green);
-      }
-
-      
-      &::-ms-reveal,
-      &::-ms-clear {
-        display: none;
-      }
-
-      &::-webkit-outer-spin-button,
-      &::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        -moz-appearance: textfield;
-        margin: 0;
-      }
-    
+      }    
     
   }
 `;
