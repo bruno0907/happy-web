@@ -10,6 +10,7 @@ export const Container = styled.aside`
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
+  transition: filter 0.1s;
 
   img{
     width: 48px;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { FiArrowLeft } from "react-icons/fi";
 
 import { Container } from './styles'
@@ -11,7 +11,9 @@ const Sidebar = () => {
   
   return (
     <Container>
-        <img src={mapMarkerImg} alt="Happy" />        
+        <Link to="/">
+          <img src={mapMarkerImg} alt="Happy" />        
+        </Link>
         <button type="button" onClick={goBack}>
           <FiArrowLeft size={24} color="#FFF" />
         </button>        

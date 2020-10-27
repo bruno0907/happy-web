@@ -78,11 +78,10 @@ export const EnterRestrictAreaButton = styled.a`
   color: var(--color-text-white);
   text-decoration: none;
   padding: 13px 40px;
-  transition: all .2s;
+  transition: filter .2s;
   
     &:hover{      
-      background: #96FEFF;
-      color: ;
+      filter: brightness(105%);
     }
 
 `
@@ -108,9 +107,5 @@ export const EnterAppButton = styled.a`
 
   :hover{
     background-color: #96FEFF;
-
-    svg{
-      stroke: ;
-    }
   }
 `

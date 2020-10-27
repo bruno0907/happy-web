@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Map, TileLayer, Marker } from 'react-leaflet'
@@ -57,6 +57,36 @@ const Dashboard = () => {
   const [approvedActive, setApprovedActive] = useState(false)
   const [pendingActive, setPendingActive] = useState(false)
   const [pageTitle, setPageTitle] = useState('Orfanatos Cadastrados')
+  
+  useEffect(() => {
+    api.get('/orphanages')
+      .then(response => {
+        console.log('api request')        
+        setAllOrphanages(response.data)        
+      })
+      .catch(error => console.log(error.message))     
+  }, [])     
+
+  useMemo(() => {
+    setOrphanages(allOrphanages)
+
+    if(approvedActive === true){
+      const approvedOrphanages = allOrphanages.filter(orphanage => orphanage.approved === true)              
+      return setOrphanages(approvedOrphanages)
+    }   
+  
+    if(pendingActive === true){
+      const approvalPendingOrphanages = allOrphanages.filter(orphanage => orphanage.approved === false)         
+      return setOrphanages(approvalPendingOrphanages)  
+    }
+
+  }, [allOrphanages, approvedActive, pendingActive])
+
+
+  const orphanagesCount = allOrphanages.length
+
+  const pendingApprovalOrphanages = allOrphanages.filter(orphanage => orphanage.approved === false)
+  const hasPendingApproval = Boolean(pendingApprovalOrphanages.length > 0)
 
   function handleApprovedFilter(){
     if(approvedActive === false){
@@ -86,32 +116,7 @@ const Dashboard = () => {
       setApprovedActive(false)    
     }
     return
-  }
-  
-  useEffect(() => {
-    api.get('/orphanages')
-      .then(response => setAllOrphanages(response.data))
-      .catch(error => console.log(error.message))
-      
-      setOrphanages(allOrphanages)
-      
-      if(approvedActive === true){
-        const approvedOrphanages = allOrphanages.filter(orphanage => orphanage.approved === true)              
-        return setOrphanages(approvedOrphanages)
-      }   
-
-      if(pendingActive === true){
-        const approvalPendingOrphanages = allOrphanages.filter(orphanage => orphanage.approved === false)         
-        return setOrphanages(approvalPendingOrphanages)
-      }
-
-    }, [allOrphanages, pendingActive, approvedActive, pageTitle])
-    
-
-  const orphanagesCount = allOrphanages.length
-
-  const pendingApprovalOrphanages = allOrphanages.filter(orphanage => orphanage.approved === false)
-  const hasPendingApproval = Boolean(pendingApprovalOrphanages.length > 0)
+  } 
 
   return(
     <Container>
@@ -154,7 +159,7 @@ const Dashboard = () => {
           ) :
           
           orphanages.map((orphanage: OrphanageProps) => 
-            <OrphanageCard key={orphanage.id}>
+            <OrphanageCard key={orphanage.id} approved={orphanage.approved}>
                 <header>
                   <Map 
                     center={[orphanage.latitude, orphanage.longitude]}
@@ -180,7 +185,7 @@ const Dashboard = () => {
                       <Link to="">
                         <FiEdit3 size={24} color="#15C3D6" />
                       </Link>
-                      <Link to="">
+                      <Link to="/">
                         <FiTrash size={24} color="#15C3D6" />
                       </Link>
                     </>

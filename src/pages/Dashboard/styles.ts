@@ -5,6 +5,10 @@ interface SidebarButtonsProps{
   hasPending?: boolean;
 }
 
+interface OrphanageCardProps{
+  approved?: boolean;
+}
+
 export const Container = styled.div`
   width: 100vw;
   height: 100vh;
@@ -163,12 +167,17 @@ export const Body = styled.div`
   justify-content: space-between;
 `
 
-export const OrphanageCard  = styled.article`
+export const OrphanageCard  = styled.article<OrphanageCardProps>`
   width: 48%;
   min-width: 540px;
   height: 309px;
   background: var(--color-text-white);
-  border: solid 1px var(--color-line-in-white);
+  border: solid 1px var(--color-button-in-gradient);
+
+  ${ props => props.approved === false && css`
+   border-color: var(--color-delete);   
+  `}
+
   border-radius: 20px;
   display: flex;
   flex-direction: column;
