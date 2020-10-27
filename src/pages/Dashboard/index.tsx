@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
-
 import { Link } from 'react-router-dom';
 
 import { Map, TileLayer, Marker } from 'react-leaflet'
+
+import Divider from '../../components/Divider';
 import './map-popup--styles.css'
 
 import { happyMapIcon } from '../../utils/mapIcon'
+
+import happyIconNoRegister from '../../assets/images/happyIcon-noregister.svg'
 
 import { 
   Container, 
@@ -18,7 +21,8 @@ import {
   Wrapper,
   Header,
   Body,
-  OrphanageCard 
+  OrphanageCard,
+  NoRegisterFound 
 } from './styles';
 
 import { 
@@ -26,10 +30,12 @@ import {
   FiAlertCircle, 
   FiPower, 
   FiEdit3, 
-  FiTrash 
+  FiTrash,
+  FiArrowRight
 } from 'react-icons/fi'
 
 import mapMarker from '../../assets/images/map-marker.svg'
+import { api } from '../../services/api';
 
 interface OrphanageProps {
   id: number;
@@ -45,34 +51,67 @@ interface SidebarButtons extends HTMLInputElement{
 }
 
 const Dashboard = () => {  
-  const [hasPending, setHasPending] = useState(false)
-  const [approvedButtonActive, setApprovedButtonActive] = useState(false)
-  const [pendingButtonActive, setPendingButtonActive] = useState(false)
-
   const [theme, setTheme] = useState('light-v10')  
+  const [allOrphanages, setAllOrphanages] = useState<OrphanageProps[]>([])
   const [orphanages, setOrphanages] = useState<OrphanageProps[]>([])
-  const [location, setLocation] = useState({
-    latitude: 0,
-    longitude: 0
-  })
+  const [approvedActive, setApprovedActive] = useState(false)
+  const [pendingActive, setPendingActive] = useState(false)
+  const [pageTitle, setPageTitle] = useState('Orfanatos Cadastrados')
+
+  function handleApprovedFilter(){
+    if(approvedActive === false){
+      setApprovedActive(true)
+      setPageTitle('Cadastros Aprovados')
+    } else {
+      setApprovedActive(false) 
+      setPageTitle('Orfanatos Cadastros')
+    }
+
+    if(pendingActive === true){
+      setPendingActive(false)   
+    }     
+    return
+  }
+  
+  function handlePendingFilter(){
+    if(pendingActive === false){
+      setPendingActive(true)
+      setPageTitle('Cadastros Pendentes')
+    } else {
+      setPendingActive(false)
+      setPageTitle('Orfanatos Cadastros')
+    }
+
+    if(approvedActive === true){
+      setApprovedActive(false)    
+    }
+    return
+  }
   
   useEffect(() => {
-    const pendingApproval = Boolean([1, 2, 3].length > 0)
-    setHasPending(pendingApproval)
+    api.get('/orphanages')
+      .then(response => setAllOrphanages(response.data))
+      .catch(error => console.log(error.message))
+      
+      setOrphanages(allOrphanages)
+      
+      if(approvedActive === true){
+        const approvedOrphanages = allOrphanages.filter(orphanage => orphanage.approved === true)              
+        return setOrphanages(approvedOrphanages)
+      }   
 
-    setLocation({
-      latitude: -26.9905831,
-      longitude: -48.6288651
-    })
+      if(pendingActive === true){
+        const approvalPendingOrphanages = allOrphanages.filter(orphanage => orphanage.approved === false)         
+        return setOrphanages(approvalPendingOrphanages)
+      }
+
+    }, [allOrphanages, pendingActive, approvedActive, pageTitle])
     
-  }, [])
 
-  const handleApprovedFilter = () => {
-    setApprovedButtonActive(!approvedButtonActive)    
-  }
-  const handlePendingFilter = () => {
-    setPendingButtonActive(!pendingButtonActive)    
-  }
+  const orphanagesCount = allOrphanages.length
+
+  const pendingApprovalOrphanages = allOrphanages.filter(orphanage => orphanage.approved === false)
+  const hasPendingApproval = Boolean(pendingApprovalOrphanages.length > 0)
 
   return(
     <Container>
@@ -80,14 +119,14 @@ const Dashboard = () => {
         <img src={mapMarker} alt="Happy"/>
         <SidebarButtons>
           <ApprovedButton 
-            active={approvedButtonActive} 
+            active={approvedActive} 
             onClick={handleApprovedFilter}
           >
             <FiMapPin size={24} />
           </ApprovedButton>
           <PendingButton 
-            hasPending={hasPending} 
-            active={pendingButtonActive}
+            hasPending={hasPendingApproval} 
+            active={pendingActive}
             onClick={handlePendingFilter}
           >
             <FiAlertCircle size={24} />
@@ -100,51 +139,62 @@ const Dashboard = () => {
       <Main>
         <Wrapper>
           <Header>
-            <h1>Orfanatos Cadastrados</h1>
-            <span>2 orfanatos</span>
+            <h1>{pageTitle}</h1>
+            <span>{orphanagesCount} orfanatos</span>
           </Header>
           
-          <hr/>
+          <Divider />
 
           <Body>
+          { orphanages.length < 1 ? (
+            <NoRegisterFound>
+              <img src={happyIconNoRegister} alt="Nenhum registro encontrado"/>
+              <p>Nenhum registro encontrado</p>
+            </NoRegisterFound>
+          ) :
+          
+          orphanages.map((orphanage: OrphanageProps) => 
+            <OrphanageCard key={orphanage.id}>
+                <header>
+                  <Map 
+                    center={[orphanage.latitude, orphanage.longitude]}
+                    zoom={15}
+                    style={{width: '100%', height: '100%'}}
+                    dragging={false}
+                    zoomControl={false}
+                  >  
+                    <TileLayer 
+                      url={`https://api.mapbox.com/styles/v1/mapbox/${theme}/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`} 
+                    />                
+                    <Marker
+                      key="1" 
+                      position={[orphanage.latitude, orphanage.longitude]}
+                      icon={happyMapIcon}
+                    />
+                  </Map>
+                </header>
+                <footer>
+                  <h3>{orphanage.name}</h3>
+                  {orphanage.approved === true ? (
+                    <>
+                      <Link to="">
+                        <FiEdit3 size={24} color="#15C3D6" />
+                      </Link>
+                      <Link to="">
+                        <FiTrash size={24} color="#15C3D6" />
+                      </Link>
+                    </>
+                  ) : (
+                    <Link to="">
+                    <FiArrowRight size={24} color="#15C3D6" />
+                  </Link>
+                  )
+                  }
+                </footer>
+              </OrphanageCard>                  
+            
+          )}
 
-          <OrphanageCard>
-              <header>              
-
-                <Map 
-                  center={[location.latitude,location.longitude]}
-                  zoom={15}
-                  style={{width: '100%', height: '100%'}}
-                  dragging={false}
-                  zoomControl={false}
-                >  
-                  <TileLayer 
-                    url={`https://api.mapbox.com/styles/v1/mapbox/${theme}/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`} 
-                  />                
-                  <Marker
-                    key="1" 
-                    position={[-26.9905831,-48.6288651]}
-                    icon={happyMapIcon}
-                  />
-                </Map>
-
-              </header>
-
-              <footer>
-
-                <h3>Orf. Esperança</h3>
-
-                <Link to="">
-                  <FiEdit3 size={24} color="#15C3D6" />
-                </Link>
-
-                <Link to="">
-                  <FiTrash size={24} color="#15C3D6" />
-                </Link>
-
-              </footer>
-
-            </OrphanageCard>                  
             
           </Body>
         </Wrapper>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
-import { FiPlus, FiArrowRight } from 'react-icons/fi'
+import { FiPlus, FiArrowRight, FiSun, FiMoon } from 'react-icons/fi'
 import { Map, TileLayer, Marker, Popup } from 'react-leaflet'
 
 import './map-popup--styles.css'
@@ -10,7 +10,9 @@ import {
   SideBar,  
   SideBarContent,
   Location,  
-  AddButton
+  AddButton,
+  // ThemeSwitch,
+  // ThemeSwitchToggler
 } from './styles'
 
 import mapMarker from '../../assets/images/map-marker.svg'
@@ -35,6 +37,9 @@ const OrphanagesMap = () => {
     longitude: 0
   })
 
+  function handleMapTheme(){
+    return theme === 'light-v10' ? setTheme('dark-v10') : setTheme('light-v10')
+  }
   
   useEffect(() => {
     
@@ -57,7 +62,9 @@ const OrphanagesMap = () => {
     <Container>
       <SideBar>
         <SideBarContent>
-          <img src={mapMarker} alt="Happy Logo"/>
+          <Link to="/">
+            <img src={mapMarker} alt="Happy Logo"/>
+          </Link>
           <h1>Escolha <br/>um orfanato no mapa</h1>
           <p>Muitas crianças estão esperando a sua visita :)</p>
         </SideBarContent>
@@ -94,6 +101,13 @@ const OrphanagesMap = () => {
       <AddButton as={Link} to="/orphanages/create">
         <FiPlus />
       </AddButton>      
+      {/* <ThemeSwitch onClick={handleMapTheme}>
+        <div>
+          <FiSun size={20} />
+          <FiMoon size={20} />
+          <ThemeSwitchToggler theme={theme}/>
+        </div>
+      </ThemeSwitch> */}
     </Container>
   );
 }

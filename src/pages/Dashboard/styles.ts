@@ -218,3 +218,18 @@ export const OrphanageCard  = styled.article`
       }
     }
 `
+
+export const NoRegisterFound = styled.div` 
+  width: 100%;
+  margin-top: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; 
+
+
+    p{
+      margin-top: 16px;
+      color: var(--color-text-title);
+    }
+`

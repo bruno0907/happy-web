@@ -1,4 +1,8 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+
+interface ThemeSwitchProps{
+  theme: string;
+}
 
 export const Container = styled.div`
   width: 100vw;
@@ -82,3 +86,40 @@ export const AddButton = styled.a`
     filter: brightness(110%);
   }
 `
+// export const ThemeSwitch = styled.div`
+//   position: absolute;  
+//   width: 80px;
+//   height: 40px;
+//   right: 50px;
+//   top: 50px;
+//   border-radius: 30px;
+//   background: var(--color-text-title);
+//   border: solid 2px var(--color-button-in-gradient);  
+//   z-index: 998;
+//   overflow: hidden;
+  
+//   div{
+//     width: 100%;
+//     height: 100%;
+//     padding: 0 6px;        
+//     display: flex;
+//     align-items: center;
+//     justify-content: space-between;
+//     position: relative;
+//   }
+
+// ` 
+// export const ThemeSwitchToggler = styled.button<ThemeSwitchProps>`
+//   width: 25px;
+//   height: 25px;
+//   position: absolute;
+//   border: none;
+//   border-radius: 12px;
+//   background: var(--color-button-in-gradient);
+  
+//   transition: transform 0.2s;
+  
+//   ${ props => props.theme === 'dark-v10'&&  css`
+//     transform: translateX(40px);
+//   `}
+//`

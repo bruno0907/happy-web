@@ -220,7 +220,7 @@ const CreateOrphanage = () => {
               </OpenOnWeekendsOptions>
             </OpenOnWeekendsSection>
           </FormSection>
-          <Button label="Confirmar" disabled={position.latitude > 0 ? false : true}/>
+          <Button label="Confirmar" disabled={password_verify.length > 0 ? false : true}/>
         </CreateOrphanageForm>
       </Content>
     </Container>
