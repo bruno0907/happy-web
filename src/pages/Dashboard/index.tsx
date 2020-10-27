@@ -60,8 +60,7 @@ const Dashboard = () => {
   
   useEffect(() => {
     api.get('/orphanages')
-      .then(response => {
-        console.log('api request')        
+      .then(response => {             
         setAllOrphanages(response.data)        
       })
       .catch(error => console.log(error.message))     
@@ -81,7 +80,6 @@ const Dashboard = () => {
     }
 
   }, [allOrphanages, approvedActive, pendingActive])
-
 
   const orphanagesCount = allOrphanages.length
 
@@ -182,10 +180,10 @@ const Dashboard = () => {
                   <h3>{orphanage.name}</h3>
                   {orphanage.approved === true ? (
                     <>
-                      <Link to="">
+                      <Link to="/">
                         <FiEdit3 size={24} color="#15C3D6" />
                       </Link>
-                      <Link to="/">
+                      <Link to={`/app/dashboard/orphanage/remove/${orphanage.name}/${orphanage.id}`}>
                         <FiTrash size={24} color="#15C3D6" />
                       </Link>
                     </>

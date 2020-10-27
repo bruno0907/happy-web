@@ -14,6 +14,8 @@ import NewPassword from './pages/NewPassword'
 import PageSuccess from './pages/RegisterSuccess'
 import PageNotFound from './pages/PageNotFound'
 import Dashboard from './pages/Dashboard'
+import OrphanageRevision from './pages/OrphanageRevision'
+import OrphanageRemoval from './pages/OrphanageRemoval'
 
 const Routes = () => {
   return (
@@ -25,7 +27,9 @@ const Routes = () => {
         <Route path="/orphanages/:id" exact component={Orphanages} />
 
         <Route path="/app/sign-in"  component={SignIn} />
-        <Route path="/app/dashboard"  component={Dashboard} />
+        <Route path="/app/dashboard" exact component={Dashboard} />
+        <Route path="/app/dashboard/orphanage/revision/:id" component={OrphanageRevision} />
+        <Route path="/app/dashboard/orphanage/remove/:name/:id" component={OrphanageRemoval} />
 
         <Route path="/app/password-forgot"  component={PasswordForgot} />
         <Route path="/app/new-password"  component={NewPassword} />
