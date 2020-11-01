@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { FaWhatsapp } from "react-icons/fa";
-import { FiClock, FiInfo } from "react-icons/fi";
+import { useHistory, useParams } from 'react-router-dom'
+
+import { FiClock, FiInfo, FiXCircle, FiCheck } from "react-icons/fi";
 import { Map, Marker, TileLayer } from "react-leaflet";
-import { useParams } from 'react-router-dom'
 
 import Sidebar from '../../components/Sidebar'
 import Divider from '../../components/Divider'
@@ -21,7 +21,9 @@ import {
   OpeningHours,
   OpenOnWeekends,
   DontOpenOnWeekends,
-  ContactButton
+  ApprovalSection,
+  AcceptButton,
+  RefuseButton
 } from './styles'
 
 import { happyMapIcon } from '../../utils/mapIcon'
@@ -48,6 +50,7 @@ interface OrphanageParams {
 }
 
 export default function OrphanageRevision() {  
+  const history = useHistory()
   const params = useParams<OrphanageParams>()
   const [orphanage, setOrphanage] = useState<OrphanageProps>()
   const [activeImageIndex, setActiveImageIndex] = useState(0)
@@ -62,6 +65,22 @@ export default function OrphanageRevision() {
 
   if(!orphanage){
     return <p>Carregando...</p>
+  }
+
+  async function handleOrphanageApproval(){
+    const { id } = params   
+    
+    const storagedToken = localStorage.getItem('@HappyAdmin:Token')  
+    const token = storagedToken?.split('').filter(c => c !== '"').join('')
+
+    return await api.patch(`app/orphanages/approve/${id}`, {      
+      approved: true
+    }, {
+      headers: {
+        authorization: `Bearer ${token}`
+      }
+    }).then(() => history.push('/app/dashboard'))
+      .catch(error => console.log(error.message))
   }
 
   return (
@@ -141,15 +160,17 @@ export default function OrphanageRevision() {
               }
             </OrphanageOpenDetails>
 
-            <ContactButton href={`https://api.whatsapp.com/send?phone=55${orphanage.whatsapp}&text=Olá ${orphanage.name}. Quero visitar vocês!`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="contact-button"              
-            >
-              <FaWhatsapp size={20} color="#FFF" />
-              Entrar em contato
-            </ContactButton>
           </OrphanageDetailsContent>
+          <ApprovalSection>
+            <RefuseButton>
+              <FiXCircle size={24} color="#FFF" />
+              Rejeitar
+            </RefuseButton>
+            <AcceptButton onClick={handleOrphanageApproval}>
+            <FiCheck size={24} color="#FFF" />
+              Aceitar
+            </AcceptButton>
+          </ApprovalSection>
         </OrphanageDetails>
       </Main>
     </Container>

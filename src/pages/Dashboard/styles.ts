@@ -175,7 +175,7 @@ export const OrphanageCard  = styled.article<OrphanageCardProps>`
   border: solid 1px var(--color-button-in-gradient);
 
   ${ props => props.approved === false && css`
-   border-color: var(--color-delete);   
+   border-color: var(--color-button-delete);   
   `}
 
   border-radius: 20px;

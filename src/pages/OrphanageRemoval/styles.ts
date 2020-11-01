@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const Container = styled.div`
   width: 100vw;
   height: 100vh;
-  background: var(--color-delete);
+  background: #FF669D;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -42,7 +42,7 @@ export const Content = styled.aside`
         display: flex;
         align-items: center;
         justify-content: center;   
-        background: #D6487B;
+        background: var(--color-button-delete);
         font-family: Nunito;
         font-size: 18px;
         font-weight: 800;
@@ -56,10 +56,10 @@ export const Content = styled.aside`
 
         :nth-child(2){
           background-color: transparent;
-          border: solid 3px #D6487B;
+          border: solid 3px var(--color-button-delete);
 
           :hover{
-          background: #D6487B;
+            background: var(--color-button-delete-hover);
         }
         }
       }

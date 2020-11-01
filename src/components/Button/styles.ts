@@ -5,7 +5,7 @@ interface ButtonProps{
 }
 
 export const Container = styled.button<ButtonProps>`
-  background: var(--color-green);
+  background: var(--color-button-confirm);
   width: 100%;
   height: 64px;  
   display: flex;
@@ -13,17 +13,18 @@ export const Container = styled.button<ButtonProps>`
   justify-content: center;
   border-radius: 20px;
   border: none;
-  color: #FFFFFF;
+  color: var(--color-text-white);
   font-weight: 700;
-  opacity: 0.6;  
   cursor: pointer;  
   transition: background 0.2s;
-
-    &:hover{
-      opacity: 1;
-    }
-    
+  
+  &:hover{      
+    background: var(--color-button-confirm-hover);
+  }
+  
   ${props => props.disabled && css`
-    pointer-events: none;
+    pointer-events: none;        
+    background: grey;
+    opacity: 0.4;
   `}
 `;

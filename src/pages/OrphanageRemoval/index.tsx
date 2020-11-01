@@ -23,8 +23,6 @@ const OrphanageRemoval = (route: {
 
   const token = storagedToken?.split('').filter(c => c !== '"').join('')
 
-  console.log('Token: ', token)
-
   async function handleOrphanageRemove(){
     await api.delete(`/app/orphanages/delete/${id}`, {
       headers: {

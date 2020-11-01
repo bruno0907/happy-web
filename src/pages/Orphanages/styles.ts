@@ -149,7 +149,7 @@ export const ContactButton = styled.a`
   height: 64px;
   border: 0;
   cursor: pointer;
-  background: #3CDC8C;
+  background: var(--color-button-confirm);
   border-radius: 20px;
   color: var(--color-text-white);
   font-weight: 800;
@@ -163,6 +163,6 @@ export const ContactButton = styled.a`
     }
 
     :hover{
-      background: #36CF82;
+      background: var(--color-button-confirm-hover);
     }
 `

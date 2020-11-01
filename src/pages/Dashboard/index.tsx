@@ -170,9 +170,9 @@ const Dashboard = () => {
                       url={`https://api.mapbox.com/styles/v1/mapbox/${theme}/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`} 
                     />                
                     <Marker
-                      key="1" 
                       position={[orphanage.latitude, orphanage.longitude]}
                       icon={happyMapIcon}
+                      interactive={false}
                     />
                   </Map>
                 </header>
@@ -180,7 +180,7 @@ const Dashboard = () => {
                   <h3>{orphanage.name}</h3>
                   {orphanage.approved === true ? (
                     <>
-                      <Link to="/">
+                      <Link to={`/app/dashboard/orphanage/edit/${orphanage.id}`}>
                         <FiEdit3 size={24} color="#15C3D6" />
                       </Link>
                       <Link to={`/app/dashboard/orphanage/remove/${orphanage.name}/${orphanage.id}`}>
@@ -188,7 +188,7 @@ const Dashboard = () => {
                       </Link>
                     </>
                   ) : (
-                    <Link to="">
+                    <Link to={`/app/dashboard/orphanage/revision/${orphanage.id}`}>
                     <FiArrowRight size={24} color="#15C3D6" />
                   </Link>
                   )

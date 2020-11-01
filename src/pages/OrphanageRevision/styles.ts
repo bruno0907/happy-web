@@ -142,27 +142,50 @@ export const DontOpenOnWeekends = styled.div`
   border: 1px solid #FFBCD4;
   color: #FF669D;
 `
-export const ContactButton = styled.a`
-  margin-top: 64px;
-  text-decoration: none;
+
+export const ApprovalSection = styled.footer`
   width: 100%;
-  height: 64px;
-  border: 0;
-  cursor: pointer;
-  background: #3CDC8C;
-  border-radius: 20px;
-  color: var(--color-text-white);
-  font-weight: 800;
+  padding: 48px 80px;
   display: flex;
-  justify-content: center;
   align-items: center;
-  transition: background-color 0.2s;
+  justify-content: space-between;
+  background: var(--color-input-fill);
+  border-top: solid 1px var(--color-line-in-white);
 
-    svg{
-      margin-right: 16px;
-    }
+    button {
+      text-decoration: none;
+      width: 48%;
+      height: 64px;
+      border: 0;
+      cursor: pointer;      
+      border-radius: 20px;
+      color: var(--color-text-white);
+      font-family: Nunito;
+      font-weight: 800;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: background-color 0.2s;
 
-    :hover{
-      background: #36CF82;
+        svg{
+          margin-right: 16px;
+        }
     }
 `
+
+export const AcceptButton = styled.button`  
+  background: var(--color-button-confirm); 
+
+    :hover{
+      background: var(--color-button-confirm-hover);
+    }
+`
+
+export const RefuseButton = styled.button` 
+  background: var(--color-button-delete);
+  
+    :hover{
+      background: var(--color-button-delete-hover);
+    }
+`
+

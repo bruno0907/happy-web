@@ -9,8 +9,10 @@
   --color-text-title: #4D6F80;
   --color-line-in-white: #D3E2E5;
   --color-input-fill: #F5F8FA;
-  --color-green: #37C77F;
-  --color-delete: #FF669D;
+  --color-button-confirm: #31B272;
+  --color-button-confirm-hover: #3BD689 ;
+  --color-button-delete: #D6487B;
+  --color-button-delete-hover: #D6487B;
   --color-button-in-gradient: #12AFCB;  
   --color-sidebar: #15C3D6;
   --color-button-yellow: #FFD666;  

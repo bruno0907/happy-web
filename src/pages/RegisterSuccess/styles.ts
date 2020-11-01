@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const Container = styled.div`
   width: 100vw;
   height: 100vh;
-  background: var(--color-green);
+  background: #37C77F;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -38,7 +38,7 @@ export const Content = styled.aside`
       display: flex;
       align-items: center;
       justify-content: center;   
-      background: #31B272;
+      background: var(--color-button-confirm);
       font-family: Nunito;
       font-size: 18px;
       font-weight: 800;
@@ -47,7 +47,7 @@ export const Content = styled.aside`
       transition: background 0.2s;
       
       &:hover{
-        background: #3BD689;
+        background: var(--color-button-confirm-hover);
       }
     }
 

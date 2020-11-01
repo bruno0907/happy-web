@@ -28,7 +28,7 @@ export const Container = styled.div`
     transition: border-color 0.1s;    
 
       &:focus{
-        border-color: var(--color-green);
+        border-color: var(--color-input-border-validated);
       }
 
       &::placeholder{
@@ -36,7 +36,7 @@ export const Container = styled.div`
       }
 
       &:not(:placeholder-shown){
-        border-color: var(--color-green);
+        border-color: var(--color-input-border-validated);
       }
 
       
