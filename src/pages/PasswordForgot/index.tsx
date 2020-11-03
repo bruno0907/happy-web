@@ -28,8 +28,12 @@ const PasswordForgot = () => {
     api.post('/app/admin/password-recovery', {
       email
     })
-      .then(response => {        
+      .then(() => {        
         alert(`Um email foi enviado para ${email}. Verifique sua caixa de entrada para redefinir sua senha.`)
+        localStorage.removeItem('@HappyAdmin:Token')
+        localStorage.removeItem('@HappyAdmin:Email')
+        localStorage.removeItem('@HappyAdmin:Password')
+        localStorage.removeItem('@HappyAdmin:RememberMe')
         history.push('sign-in')
       })
       .catch(error => console.log(error.message))

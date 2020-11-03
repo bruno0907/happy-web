@@ -1,4 +1,4 @@
-import React, { useState, FormEvent, ChangeEvent, useEffect, useMemo } from "react";
+import React, { useState, FormEvent, ChangeEvent, useEffect } from "react";
 import { useHistory, useParams } from 'react-router-dom'
 import { Map, Marker, TileLayer } from 'react-leaflet';
 import { LeafletMouseEvent } from 'leaflet'
@@ -20,7 +20,7 @@ import {
   ImagesContainer,
   AddImage,
   OpenOnWeekendsSection,
-  OpenOnWeekendsOptions,
+  OpenOnWeekendsOptions
 } from './styles'
 
 import { happyMapIcon } from '../../utils/mapIcon'
@@ -52,7 +52,7 @@ interface OrphanageImages{
 
 const EditOrphanage = () => {
   const history = useHistory()
-  const params = useParams<OrphanageParams>()  
+  const params = useParams<OrphanageParams>()    
 
   // Form States
   const [position, setPosition] = useState({ latitude: 0, longitude: 0})
@@ -66,6 +66,9 @@ const EditOrphanage = () => {
   const [selectedImages, setSelectedImages] = useState([])
   const [imagesPreview, setImagesPreview] = useState([])
   const [orphanageImages, setOrphanageImages] = useState([])
+
+  const { id } = params
+  const token = localStorage.getItem('@HappyAdmin:Token')  
 
   useEffect(() => {
     async function getOrphanage(){
@@ -123,7 +126,11 @@ const EditOrphanage = () => {
   }
 
   function handleOrphanageImageRemoval(imageId: number){
-    api.delete(`app/orphanages/image/remove/${imageId}`)
+    api.delete(`app/orphanages/image/remove/${imageId}`, {
+      headers: {
+        authorization: `Bearer ${token}`
+      }
+    })
       .then(() => {
         const remainingImages = orphanageImages.filter(
             (image: OrphanageImages) => image.id !== imageId      
@@ -136,13 +143,6 @@ const EditOrphanage = () => {
 
   function handleSubmit(event: FormEvent){
     event.preventDefault()
-
-    const { id } = params
-
-    const storagedToken = localStorage.getItem('@HappyAdmin:Token')  
-    const token = storagedToken?.split('')
-      .filter(c => c !== '"')
-      .join('')
 
     const { latitude, longitude } = position
     const data = new FormData()
@@ -165,17 +165,15 @@ const EditOrphanage = () => {
         authorization: `Bearer ${token}`
       }
     })
-      .then((response) => {   
-        console.log(response.data)     
-        history.push('/orphanages/create/success')
+      .then(() => {
+        alert('Cadastro atualizado com sucesso')
+        history.goBack()
       })
-      .catch(() => {
-        alert('Houve um erro com seu cadastro')        
-      })    
+      .catch(() => alert('Houve um erro com seu cadastro'))    
   }
 
   return (
-    <Container>
+    <Container>     
       <Sidebar />  
       <Content>
         <Title>Editar {name}</Title>

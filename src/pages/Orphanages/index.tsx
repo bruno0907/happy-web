@@ -63,7 +63,7 @@ export default function Orphanage() {
   if(!orphanage){
     return <p>Carregando...</p>
   }
-
+  console.log(orphanage)
   return (
     <Container>      
       

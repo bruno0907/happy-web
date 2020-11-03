@@ -70,8 +70,7 @@ export default function OrphanageRevision() {
   async function handleOrphanageApproval(){
     const { id } = params   
     
-    const storagedToken = localStorage.getItem('@HappyAdmin:Token')  
-    const token = storagedToken?.split('').filter(c => c !== '"').join('')
+    const token = localStorage.getItem('@HappyAdmin:Token')      
 
     return await api.patch(`app/orphanages/approve/${id}`, {      
       approved: true
@@ -79,7 +78,8 @@ export default function OrphanageRevision() {
       headers: {
         authorization: `Bearer ${token}`
       }
-    }).then(() => history.push('/app/dashboard'))
+    })
+      .then(() => history.push('/app/dashboard'))
       .catch(error => console.log(error.message))
   }
 

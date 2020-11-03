@@ -19,9 +19,7 @@ const OrphanageRemoval = (route: {
   const { id } = route.match.params
   const { name } = route.match.params
 
-  const storagedToken = localStorage.getItem('@HappyAdmin:Token')  
-
-  const token = storagedToken?.split('').filter(c => c !== '"').join('')
+  const token = localStorage.getItem('@HappyAdmin:Token')    
 
   async function handleOrphanageRemove(){
     await api.delete(`/app/orphanages/delete/${id}`, {

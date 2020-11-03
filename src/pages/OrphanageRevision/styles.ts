@@ -25,14 +25,14 @@ export const OrphanageDetails = styled.div`
     img{ 
       width: 100%;
       height: 300px;
-      object-fit: cover;
+      object-fit: cover;      
     }
 `
 
 export const ImageGallery = styled.div`
   display: grid;
   grid-template-columns: repeat(6 ,1fr);
-  column-gap: 16px;
+  gap: 16px;
   margin: 16px 40px 0;    
 `
 

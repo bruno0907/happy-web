@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 
 import { useHistory } from 'react-router-dom'
 
@@ -27,6 +27,21 @@ const SignIn = () => {
   const [password, setPassword] = useState('')  
   const [rememberMe, setRememberMe] = useState(false)
 
+  useEffect(() => {
+    const remember = localStorage.getItem('@HappyAdmin:RememberMe')
+    
+    if(remember === 'true'){      
+      const email = localStorage.getItem('@HappyAdmin:Email')
+      const password = localStorage.getItem('@HappyAdmin:Password')      
+      
+      if(email && password){
+        setEmail(email)
+        setPassword(password)
+        setRememberMe(true)
+        return
+      }
+    }
+  }, [])
   const handleSignIn = (event: FormEvent) => {
     event.preventDefault()
 
@@ -37,13 +52,17 @@ const SignIn = () => {
 
     api.post('app/admin/authenticate', data)
       .then(response => {
-        const { data } = response        
-        localStorage.setItem('@HappyAdmin:Token', JSON.stringify(data.token))
-        localStorage.setItem('@HappyAdmin:User', JSON.stringify(data.user))
-        localStorage.setItem('@Happy:RememberMe', JSON.stringify(rememberMe))
+        const { data } = response                    
+        localStorage.setItem('@HappyAdmin:Token', data.token)
+        localStorage.setItem('@HappyAdmin:RememberMe', JSON.stringify(rememberMe))
+        
+        if(rememberMe === true){
+          localStorage.setItem('@HappyAdmin:Email', email)
+          localStorage.setItem('@HappyAdmin:Password', password)
+        }
         history.push('/app/dashboard')
-        console.log({data, rememberMe})
-      }).catch(error => console.log(error.message))
+      })
+      .catch(error => console.log(error.message))
   }
 
   return (
@@ -54,7 +73,7 @@ const SignIn = () => {
 
 
       <FormAside>
-        <GoBack onClick={() => history.goBack()}>
+        <GoBack onClick={() => history.push('/')}>
           <FiArrowLeft size={24} color="15C3D6" />
         </GoBack>
         <form  onSubmit={handleSignIn}>

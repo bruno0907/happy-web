@@ -19,6 +19,7 @@ import OrphanageRemoval from './pages/OrphanageRemoval'
 import EditOrphanage from './pages/EditOrphanage'
 
 const Routes = () => {
+
   return (
     <BrowserRouter>
       <Switch>
@@ -26,7 +27,6 @@ const Routes = () => {
         <Route path="/orphanages" exact component={OrphanagesMap} />
         <Route path="/orphanages/create/" exact component={CreateOrphanage} />
         <Route path="/orphanages/:id" exact component={Orphanages} />
-
         <Route path="/app/sign-in"  component={SignIn} />
         <Route path="/app/dashboard" exact component={Dashboard} />
         <Route path="/app/dashboard/orphanage/revision/:id" component={OrphanageRevision} />

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import { Map, TileLayer, Marker } from 'react-leaflet'
 
@@ -50,7 +50,9 @@ interface SidebarButtons extends HTMLInputElement{
   hasPending?:boolean;
 }
 
-const Dashboard = () => {  
+const Dashboard = () => { 
+  const history = useHistory()
+  
   const [theme, setTheme] = useState('light-v10')  
   const [allOrphanages, setAllOrphanages] = useState<OrphanageProps[]>([])
   const [orphanages, setOrphanages] = useState<OrphanageProps[]>([])
@@ -116,6 +118,14 @@ const Dashboard = () => {
     return
   } 
 
+  function handleSignout(){    
+    localStorage.removeItem ('@HappyAdmin:RememberMe')
+    localStorage.removeItem('@HappyAdmin:Token')
+    localStorage.removeItem('@HappyAdmin:Password')
+    localStorage.removeItem('@HappyAdmin:Email')
+    history.push('/app/sign-in')
+  }
+
   return(
     <Container>
       <SideBar>
@@ -135,7 +145,7 @@ const Dashboard = () => {
             <FiAlertCircle size={24} />
           </PendingButton>
         </SidebarButtons>
-        <Logout>
+        <Logout onClick={handleSignout}>
           <FiPower size={24} />
         </Logout>
       </SideBar>
@@ -165,7 +175,8 @@ const Dashboard = () => {
                     style={{width: '100%', height: '100%'}}
                     dragging={false}
                     zoomControl={false}
-                  >  
+                    scrollWheelZoom={false}
+                  >                    
                     <TileLayer 
                       url={`https://api.mapbox.com/styles/v1/mapbox/${theme}/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`} 
                     />                

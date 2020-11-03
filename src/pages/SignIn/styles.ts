@@ -64,8 +64,8 @@ export const RememberMe = styled.div`
         display: none; 
         
         &:checked + div{
-          background: var(--color-green);
-          border-color: var(--color-green);
+          background: var(--color-button-confirm);
+          border-color: var(--color-button-confirm);
           position: relative;
           
           &:after{
