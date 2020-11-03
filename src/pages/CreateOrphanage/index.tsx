@@ -94,9 +94,9 @@ const CreateOrphanage = () => {
     data.append('instructions', instructions)
     data.append('opening_hours', opening_hours)
     data.append('open_on_weekends', String(open_on_weekends))
-
+    
     images.forEach(image => data.append('images', image))
-
+    
     api.post('orphanages', data)
       .then(() => {        
         history.push('/orphanages/create/success')

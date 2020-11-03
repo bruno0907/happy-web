@@ -61,11 +61,11 @@ const EditOrphanage = () => {
   const [whatsapp, setWhatsapp] = useState('')
   const [instructions, setInstructions] = useState('')
   const [opening_hours, setOpeningHours] = useState('')
-  const [open_on_weekends, setOpenOnWeekends] = useState(true)
+  const [open_on_weekends, setOpenOnWeekends] = useState(true)  
   
-  const [images, setImages] = useState<any>([])
-  const [imagesPreview, setImagesPreview] = useState<any>([])
-  const [orphanageImages, setOrphanageImages] = useState<any>([])
+  const [selectedImages, setSelectedImages] = useState([])
+  const [imagesPreview, setImagesPreview] = useState([])
+  const [orphanageImages, setOrphanageImages] = useState([])
 
   useEffect(() => {
     async function getOrphanage(){
@@ -84,7 +84,7 @@ const EditOrphanage = () => {
       setInstructions(data.instructions)
       setOpeningHours(data.opening_hours)
       setOpenOnWeekends(data.open_on_weekends)      
-      setOrphanageImages(data.images) // State que alimenta o layout com as imagens que vem do orfanato.
+      setOrphanageImages(data.images) // state that populates the orphanage images from database.
       
     }
     getOrphanage()
@@ -104,14 +104,13 @@ const EditOrphanage = () => {
     if(!event.target.files){
       return
     }
-
-    const selectedImage = Array.from(event.target.files)
-    setImages([...images, selectedImage]) // state que vai pro banco de dados            
+    const selectedImage = Array.from(event.target.files)    
+    setSelectedImages([...selectedImages, selectedImage] as []) // images state to populate database
     
     const selectedImagesPreview = selectedImage.map(
       (image: File) => URL.createObjectURL(image)
     )
-    setImagesPreview([...imagesPreview, selectedImagesPreview]) // state que cria o preview    
+    setImagesPreview([...imagesPreview, selectedImagesPreview] as []) // images state to populate the preview    
     
   }
 
@@ -119,21 +118,31 @@ const EditOrphanage = () => {
     const remainingImages = imagesPreview.filter(
         (imageName: string) => imageName !== previewImage      
     )
-    setImagesPreview(remainingImages)
-    setImages(remainingImages)
+    setImagesPreview(remainingImages)    
     return
   }
 
   function handleOrphanageImageRemoval(imageId: number){
-    const remainingImages = orphanageImages.filter(
-        (image: OrphanageImages) => image.id !== imageId      
-    )
-    setOrphanageImages(remainingImages)    
+    api.delete(`app/orphanages/image/remove/${imageId}`)
+      .then(() => {
+        const remainingImages = orphanageImages.filter(
+            (image: OrphanageImages) => image.id !== imageId      
+        )
+        return setOrphanageImages(remainingImages)
+      })
+      .catch(error => console.log(error))       
     return
   }
 
   function handleSubmit(event: FormEvent){
     event.preventDefault()
+
+    const { id } = params
+
+    const storagedToken = localStorage.getItem('@HappyAdmin:Token')  
+    const token = storagedToken?.split('')
+      .filter(c => c !== '"')
+      .join('')
 
     const { latitude, longitude } = position
     const data = new FormData()
@@ -147,17 +156,22 @@ const EditOrphanage = () => {
     data.append('opening_hours', opening_hours)
     data.append('open_on_weekends', String(open_on_weekends))
 
-    images.forEach((image: any) => data.append('images', image))    
+    const images = selectedImages.map(i => i[0])
+    
+    images.forEach(image => data.append('images', image))    
 
-    console.log(images)
-
-    // api.post('orphanages', data)
-    //   .then(() => {        
-    //     history.push('/orphanages/create/success')
-    //   })
-    //   .catch(() => {
-    //     alert('Houve um erro com seu cadastro')        
-    //   })    
+    api.patch(`/app/orphanages/update/${id}`, data, {
+      headers: {
+        authorization: `Bearer ${token}`
+      }
+    })
+      .then((response) => {   
+        console.log(response.data)     
+        history.push('/orphanages/create/success')
+      })
+      .catch(() => {
+        alert('Houve um erro com seu cadastro')        
+      })    
   }
 
   return (
