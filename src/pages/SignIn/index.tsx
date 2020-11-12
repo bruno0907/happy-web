@@ -45,13 +45,12 @@ const SignIn = () => {
   const handleSignIn = (event: FormEvent) => {
     event.preventDefault()
 
-    const data = {
-      email,
-      password
-    }
-
-    api.post('app/admin/authenticate', data)
-      .then(response => {
+    api.get('app/admin/authenticate', {
+        auth: {
+          username: email,
+          password
+        }      
+    }).then(response => {
         const { data } = response                    
         localStorage.setItem('@HappyAdmin:Token', data.token)
         localStorage.setItem('@HappyAdmin:RememberMe', JSON.stringify(rememberMe))
@@ -61,8 +60,7 @@ const SignIn = () => {
           localStorage.setItem('@HappyAdmin:Password', password)
         }
         history.push('/app/dashboard')
-      })
-      .catch(error => console.log(error.message))
+      }).catch(error => console.log(error.message))
   }
 
   return (

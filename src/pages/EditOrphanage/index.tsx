@@ -156,8 +156,7 @@ const EditOrphanage = () => {
     data.append('opening_hours', opening_hours)
     data.append('open_on_weekends', String(open_on_weekends))
 
-    const images = selectedImages.map(i => i[0])
-    
+    const images = selectedImages.map(image => image[0])    
     images.forEach(image => data.append('images', image))    
 
     api.patch(`/app/orphanages/update/${id}`, data, {

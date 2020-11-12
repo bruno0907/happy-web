@@ -4,7 +4,6 @@ import { Link, useHistory } from 'react-router-dom';
 import { Map, TileLayer, Marker } from 'react-leaflet'
 
 import Divider from '../../components/Divider';
-import './map-popup--styles.css'
 
 import { happyMapIcon } from '../../utils/mapIcon'
 
@@ -51,9 +50,8 @@ interface SidebarButtons extends HTMLInputElement{
 }
 
 const Dashboard = () => { 
-  const history = useHistory()
+  const history = useHistory() 
   
-  const [theme, setTheme] = useState('light-v10')  
   const [allOrphanages, setAllOrphanages] = useState<OrphanageProps[]>([])
   const [orphanages, setOrphanages] = useState<OrphanageProps[]>([])
   const [approvedActive, setApprovedActive] = useState(false)
@@ -65,9 +63,10 @@ const Dashboard = () => {
       .then(response => {             
         setAllOrphanages(response.data)        
       })
-      .catch(error => console.log(error.message))     
-  }, [])     
+      .catch(error => console.log(error.message))
 
+    }, [])     
+    
   useMemo(() => {
     setOrphanages(allOrphanages)
 
@@ -75,23 +74,24 @@ const Dashboard = () => {
       const approvedOrphanages = allOrphanages.filter(orphanage => orphanage.approved === true)              
       return setOrphanages(approvedOrphanages)
     }   
-  
+
     if(pendingActive === true){
       const approvalPendingOrphanages = allOrphanages.filter(orphanage => orphanage.approved === false)         
       return setOrphanages(approvalPendingOrphanages)  
     }
 
   }, [allOrphanages, approvedActive, pendingActive])
-
+  
   const orphanagesCount = allOrphanages.length
 
   const pendingApprovalOrphanages = allOrphanages.filter(orphanage => orphanage.approved === false)
   const hasPendingApproval = Boolean(pendingApprovalOrphanages.length > 0)
 
+
   function handleApprovedFilter(){
     if(approvedActive === false){
       setApprovedActive(true)
-      setPageTitle('Cadastros Aprovados')
+      setPageTitle('Cadastros Aprovados')      
     } else {
       setApprovedActive(false) 
       setPageTitle('Orfanatos Cadastros')
@@ -106,7 +106,7 @@ const Dashboard = () => {
   function handlePendingFilter(){
     if(pendingActive === false){
       setPendingActive(true)
-      setPageTitle('Cadastros Pendentes')
+      setPageTitle('Cadastros Pendentes')      
     } else {
       setPendingActive(false)
       setPageTitle('Orfanatos Cadastros')
@@ -178,7 +178,7 @@ const Dashboard = () => {
                     scrollWheelZoom={false}
                   >                    
                     <TileLayer 
-                      url={`https://api.mapbox.com/styles/v1/mapbox/${theme}/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`} 
+                      url={`https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`} 
                     />                
                     <Marker
                       position={[orphanage.latitude, orphanage.longitude]}

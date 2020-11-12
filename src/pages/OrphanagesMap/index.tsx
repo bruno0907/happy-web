@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
-import { FiPlus, FiArrowRight, FiSun, FiMoon } from 'react-icons/fi'
+import { FiPlus, FiArrowRight } from 'react-icons/fi'
 import { Map, TileLayer, Marker, Popup } from 'react-leaflet'
 
 import './map-popup--styles.css'
@@ -11,8 +11,6 @@ import {
   SideBarContent,
   Location,  
   AddButton,
-  // ThemeSwitch,
-  // ThemeSwitchToggler
 } from './styles'
 
 import mapMarker from '../../assets/images/map-marker.svg'
@@ -29,17 +27,12 @@ interface OrphanageProps {
   approved: boolean;
 }
 
-const OrphanagesMap = () => {
-  const [theme, setTheme] = useState('light-v10')  
+const OrphanagesMap = () => {   
   const [orphanages, setOrphanages] = useState<OrphanageProps[]>([])
   const [location, setLocation] = useState({
     latitude: 0,
     longitude: 0
   })
-
-  function handleMapTheme(){
-    return theme === 'light-v10' ? setTheme('dark-v10') : setTheme('light-v10')
-  }
   
   useEffect(() => {
     
@@ -79,7 +72,7 @@ const OrphanagesMap = () => {
         style={{width: '100%', height: '100%'}}
       >  
         <TileLayer 
-          url={`https://api.mapbox.com/styles/v1/mapbox/${theme}/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`} 
+          url={`https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`} 
         />
 
         { orphanages.map(orphanage => (
@@ -101,13 +94,6 @@ const OrphanagesMap = () => {
       <AddButton as={Link} to="/orphanages/create">
         <FiPlus />
       </AddButton>      
-      {/* <ThemeSwitch onClick={handleMapTheme}>
-        <div>
-          <FiSun size={20} />
-          <FiMoon size={20} />
-          <ThemeSwitchToggler theme={theme}/>
-        </div>
-      </ThemeSwitch> */}
     </Container>
   );
 }

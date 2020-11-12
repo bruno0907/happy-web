@@ -39,12 +39,17 @@ const CreateOrphanage = () => {
   const [password_verify, setPasswordVerify] = useState('')
   const [about, setAbout] = useState('')
   const [whatsapp, setWhatsapp] = useState('')
-  const [images, setImages] = useState<File[]>([])
+  
+  // const [images, setImages] = useState<File[]>([])
+  // const [imagesPreview, setImagesPreview] = useState<string[]>([])
+
+  const [selectedImages, setSelectedImages] = useState([])
+  const [imagesPreview, setImagesPreview] = useState([])
+
   const [instructions, setInstructions] = useState('')
   const [opening_hours, setOpeningHours] = useState('')
   const [open_on_weekends, setOpenOnWeekends] = useState(true)
 
-  const [imagesPreview, setImagesPreview] = useState<string[]>([])
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(position => {
@@ -63,18 +68,32 @@ const CreateOrphanage = () => {
     })
   }
 
-  const handleSelectImages = (event: ChangeEvent<HTMLInputElement>) => {
+  // const handleSelectImages = (event: ChangeEvent<HTMLInputElement>) => {
+  //   if(!event.target.files){
+  //     return
+  //   }
+
+  //   const selectedImages = Array.from(event.target.files)
+  //   setImages(selectedImages)
+
+  //   const selectedImagesPreview = selectedImages.map(
+  //     image => URL.createObjectURL(image)
+  //   )
+  //   setImagesPreview([...images, selectedImagesPreview] as [])
+  // }
+
+  function handleSelectImages(event: ChangeEvent<HTMLInputElement>){    
     if(!event.target.files){
       return
     }
-
-    const selectedImages = Array.from(event.target.files)
-    setImages(selectedImages)
-
-    const selectedImagesPreview = selectedImages.map(
-      image => URL.createObjectURL(image)
+    const selectedImage = Array.from(event.target.files)    
+    setSelectedImages([...selectedImages, selectedImage] as []) // images state to populate database
+    
+    const selectedImagesPreview = selectedImage.map(
+      (image: File) => URL.createObjectURL(image)
     )
-    setImagesPreview(selectedImagesPreview)
+    setImagesPreview([...imagesPreview, selectedImagesPreview] as []) // images state to populate the preview    
+    
   }
 
   function handleSubmit(event: FormEvent){
@@ -95,7 +114,8 @@ const CreateOrphanage = () => {
     data.append('opening_hours', opening_hours)
     data.append('open_on_weekends', String(open_on_weekends))
     
-    images.forEach(image => data.append('images', image))
+    const images = selectedImages.map(image => image[0])    
+    images.forEach(image => data.append('images', image))  
     
     api.post('orphanages', data)
       .then(() => {        
@@ -181,8 +201,7 @@ const CreateOrphanage = () => {
                 <AddImage htmlFor="image[]">
                   <FiPlus size={24} color="#15b6d6" />
                 </AddImage>
-              <input 
-                multiple 
+              <input                  
                 type="file" 
                 id="image[]"
                 onChange={handleSelectImages}
