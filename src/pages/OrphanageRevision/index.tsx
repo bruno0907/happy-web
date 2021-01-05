@@ -67,11 +67,9 @@ export default function OrphanageRevision() {
     return <p>Carregando...</p>
   }
 
-  async function handleOrphanageApproval(){
-    const { id } = params   
-    
+  async function handleOrphanageApproval() {
+    const { id } = params
     const token = localStorage.getItem('@HappyAdmin:Token')      
-
     return await api.patch(`app/orphanages/approve/${id}`, {      
       approved: true
     }, {
@@ -83,11 +81,21 @@ export default function OrphanageRevision() {
       .catch(error => console.log(error.message))
   }
 
-  return (
-    <Container>      
-      
-      <Sidebar />
+  async function handleOrphanageRejection() {
+    const { id } = params
+    const token = localStorage.getItem('@HappyAdmin:Token')      
+    return await api.get(`app/orphanages/reject/${id}`, {
+      headers: {
+        authorization: `Bearer ${token}`
+      }
+    })
+      .then(() => history.push('/app/dashboard'))
+      .catch(error => console.log(error.message))
+  }
 
+  return (
+    <Container>            
+      <Sidebar />
       <Main>
         <OrphanageDetails>
           <img src={orphanage.images[activeImageIndex].url} alt={orphanage.name} />
@@ -103,8 +111,7 @@ export default function OrphanageRevision() {
                 <img src={image.url} alt={orphanage.name} />
               </ImageGalleryButtons>
             ))}           
-          </ImageGallery>
-          
+          </ImageGallery>          
           <OrphanageDetailsContent>
             <h1>{orphanage.name}</h1>
             <p>{orphanage.about}</p>
@@ -162,7 +169,7 @@ export default function OrphanageRevision() {
 
           </OrphanageDetailsContent>
           <ApprovalSection>
-            <RefuseButton>
+            <RefuseButton onClick={handleOrphanageRejection}>
               <FiXCircle size={24} color="#FFF" />
               Rejeitar
             </RefuseButton>

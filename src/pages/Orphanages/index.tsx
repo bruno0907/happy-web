@@ -61,18 +61,17 @@ export default function Orphanage() {
   }, [params.id])
 
   if(!orphanage){
-    return <p>Carregando...</p>
-  }
-  console.log(orphanage)
-  return (
-    <Container>      
-      
-      <Sidebar />
+    return(
+      <p>Carregando...</p>
+    )
+  }  
 
+  return (
+    <Container>            
+      <Sidebar />
       <Main>
         <OrphanageDetails>
           <img src={orphanage.images[activeImageIndex].url} alt={orphanage.name} />
-
           <ImageGallery>
             {orphanage.images.map((image, index) => (
               <ImageGalleryButtons 
@@ -84,12 +83,10 @@ export default function Orphanage() {
                 <img src={image.url} alt={orphanage.name} />
               </ImageGalleryButtons>
             ))}           
-          </ImageGallery>
-          
+          </ImageGallery>          
           <OrphanageDetailsContent>
             <h1>{orphanage.name}</h1>
             <p>{orphanage.about}</p>
-
             <MapContainer>
               <Map 
                 center={[orphanage.latitude, orphanage.longitude]} 
@@ -106,17 +103,13 @@ export default function Orphanage() {
                 />
                 <Marker interactive={false} icon={happyMapIcon} position={[orphanage.latitude, orphanage.longitude]} />
               </Map>
-
               <footer>
                 <a target="_blank" rel="noopener noreferrer" href={`${googleMapsLink}${orphanage.latitude},${orphanage.longitude}`}>Ver rotas no Google Maps</a>
               </footer>
             </MapContainer>
-
             <Divider />
-
             <InstructionTitle>Instruções para visita</InstructionTitle>
             <InstructionDetails>{orphanage.instructions}</InstructionDetails>
-
             <OrphanageOpenDetails>
               <OpeningHours>
                 <FiClock size={32} color="#15B6D6" />
@@ -140,7 +133,6 @@ export default function Orphanage() {
                   )
               }
             </OrphanageOpenDetails>
-
             <ContactButton href={`https://api.whatsapp.com/send?phone=55${orphanage.whatsapp}&text=Olá ${orphanage.name}. Quero visitar vocês!`}
               target="_blank"
               rel="noopener noreferrer"

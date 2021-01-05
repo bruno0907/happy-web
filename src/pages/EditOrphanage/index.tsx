@@ -71,6 +71,10 @@ const EditOrphanage = () => {
   const token = localStorage.getItem('@HappyAdmin:Token')  
 
   useEffect(() => {
+    if(!token){
+      history.push('/app/sign-in')
+    }
+
     async function getOrphanage(){
       const { id } = params
       const response = await api.get(`orphanages/${id}`)
@@ -92,7 +96,7 @@ const EditOrphanage = () => {
     }
     getOrphanage()
 
-  }, [params])   
+  }, [params, token, history])   
 
   function handleMapClick(event: LeafletMouseEvent){
     const { lat, lng } = event.latlng

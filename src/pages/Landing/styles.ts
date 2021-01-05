@@ -16,6 +16,7 @@ export const ContentWrapper = styled.div`
   max-width: 1100px;
   height: 100%;
   max-height: 680px;
+  padding: 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -65,12 +66,13 @@ export const ContentMain = styled.div`
 export const EnterRestrictAreaButton = styled.a`  
   right: 0;
   top: 0;
-  width: 222;
-  height: 56;
+  width: 260px;
+  height: 60px;
   background: #12D4E0;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   font-size: 20px;
   font-weight: 800;
   border: none;

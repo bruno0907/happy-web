@@ -27,7 +27,14 @@ const SignIn = () => {
   const [password, setPassword] = useState('')  
   const [rememberMe, setRememberMe] = useState(false)
 
+  const token = localStorage.getItem('@HappyAdmin:Token')  
+
   useEffect(() => {
+    if(!token){
+      localStorage.clear()      
+      return
+    }    
+
     const remember = localStorage.getItem('@HappyAdmin:RememberMe')
     
     if(remember === 'true'){      
@@ -36,22 +43,40 @@ const SignIn = () => {
       
       if(email && password){
         setEmail(email)
-        setPassword(password)
-        setRememberMe(true)
-        return
+        setPassword(password)                
+
+        api.get('app/authenticate', {
+          auth: {
+            username: email,
+            password
+          }      
+        }).then(response => {
+            const { data } = response                    
+            localStorage.setItem('@HappyAdmin:Token', data.token)
+            localStorage.setItem('@HappyAdmin:Email', email)
+            localStorage.setItem('@HappyAdmin:Password', password)
+            
+            if(data.admin && data.admin.isAdmin === true){              
+              history.push('/app/dashboard')
+            }            
+            history.push(`dashboard/orphanage/edit/${data.orphanage.id}`)
+
+          }).catch(() => alert('Usuário ou senha inválidos!'))
+        }
       }
-    }
-  }, [])
+  }, [token, history, rememberMe])
+
   const handleSignIn = (event: FormEvent) => {
     event.preventDefault()
 
-    api.get('app/admin/authenticate', {
+    api.get('app/authenticate', {
         auth: {
           username: email,
           password
         }      
     }).then(response => {
-        const { data } = response                    
+        const { data } = response  
+        console.log(data)                  
         localStorage.setItem('@HappyAdmin:Token', data.token)
         localStorage.setItem('@HappyAdmin:RememberMe', JSON.stringify(rememberMe))
         
@@ -59,8 +84,16 @@ const SignIn = () => {
           localStorage.setItem('@HappyAdmin:Email', email)
           localStorage.setItem('@HappyAdmin:Password', password)
         }
-        history.push('/app/dashboard')
-      }).catch(error => console.log(error.message))
+
+        if(data.admin && data.admin.isAdmin === true){
+          history.push('/app/dashboard')
+          return 
+        }   
+
+        history.push(`dashboard/orphanage/edit/${data.orphanage.id}`)  
+        return  
+
+      }).catch(() => alert('Usuário ou senha inválidos!'))
   }
 
   return (
@@ -107,7 +140,7 @@ const SignIn = () => {
               <Link to="/app/password-forgot">Esqueci minha senha</Link>
             </RememberMe> 
 
-            <Button label="Enviar" />
+            <Button label="Entrar" />
 
           </fieldset>
 

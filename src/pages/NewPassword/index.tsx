@@ -32,14 +32,18 @@ const NewPassword = () => {
 
     const data = {      
       password,
-      password_verify,
-      token
-    }
-
-    api.patch('app/admin/new-password', data)
-      .then(() => history.push('sign-in'))
-      .catch(error => {
-        console.log(error.message)
+      password_verify      
+    }    
+    api.patch('app/admin/new-password', data, {
+      headers: {
+        authorization: `Bearer ${token}`
+      }
+    })
+      .then(() => {
+        alert('Sua senha foi alterada com sucesso. Faça seu login.')
+        history.push('sign-in')
+      })
+      .catch(error => {        
         alert('Deu ruim, verifique o erro')
       })
   }
