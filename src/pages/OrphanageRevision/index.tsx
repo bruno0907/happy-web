@@ -98,20 +98,24 @@ export default function OrphanageRevision() {
       <Sidebar />
       <Main>
         <OrphanageDetails>
-          <img src={orphanage.images[activeImageIndex].url} alt={orphanage.name} />
+          { orphanage.images.length <= 0 ? null : 
+            <>
+              <img src={orphanage.images[activeImageIndex].url} alt={orphanage.name} />
 
-          <ImageGallery>
-            {orphanage.images.map((image, index) => (
-              <ImageGalleryButtons 
-                key={image.id}                 
-                active={activeImageIndex === index ? true : false}
-                type="button" 
-                onClick={() => setActiveImageIndex(index)}
-              >
-                <img src={image.url} alt={orphanage.name} />
-              </ImageGalleryButtons>
-            ))}           
-          </ImageGallery>          
+              <ImageGallery>
+                {orphanage.images.map((image, index) => (
+                  <ImageGalleryButtons 
+                    key={image.id}                 
+                    active={activeImageIndex === index ? true : false}
+                    type="button" 
+                    onClick={() => setActiveImageIndex(index)}
+                  >
+                    <img src={image.url} alt={orphanage.name} />
+                  </ImageGalleryButtons>
+                ))}           
+              </ImageGallery> 
+            </>    
+          }
           <OrphanageDetailsContent>
             <h1>{orphanage.name}</h1>
             <p>{orphanage.about}</p>
