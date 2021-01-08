@@ -1,23 +1,21 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 import { Container, Content, Hero } from './styles';
 
 import heroRemove from '../../assets/images/hero-remove.svg'
 import { api } from '../../services/api';
 
-const OrphanageRemoval = (route: {
-  match: {
-    params: {
-      id: number;
-      name: string;
-    }
-  }
-}) => {
+interface OrphanageParams {
+  id: string;
+  name: string;
+}
+
+const OrphanageRemoval = () => {
   const history = useHistory()  
-  
-  const { id } = route.match.params
-  const { name } = route.match.params
+  const params = useParams<OrphanageParams>()
+
+  const { id, name } = params
 
   const token = localStorage.getItem('@HappyAdmin:Token')    
 
@@ -35,12 +33,11 @@ const OrphanageRemoval = (route: {
     <Container>
        <Content>
          <h1>Excluir!</h1>
-          <p>Você tem certeza que quer excuir o {name}?</p>   
+          <p>Você tem certeza que quer excluir o {name}?</p>   
           <div>
             <button onClick={handleOrphanageRemove}>Excluir!</button>           
             <button onClick={() => history.goBack()}>Cancelar</button>          
-          </div>      
-         
+          </div>               
        </Content>
        <Hero src={heroRemove} />
     </Container>

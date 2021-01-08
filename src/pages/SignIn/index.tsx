@@ -33,38 +33,16 @@ const SignIn = () => {
     if(!token){
       localStorage.clear()      
       return
-    }    
+    }  
 
     const remember = localStorage.getItem('@HappyAdmin:RememberMe')
     
     if(remember === 'true'){      
       const email = localStorage.getItem('@HappyAdmin:Email')
-      const password = localStorage.getItem('@HappyAdmin:Password')      
-      
-      if(email && password){
-        setEmail(email)
-        setPassword(password)                
-
-        api.get('app/authenticate', {
-          auth: {
-            username: email,
-            password
-          }      
-        }).then(response => {
-            const { data } = response                    
-            localStorage.setItem('@HappyAdmin:Token', data.token)
-            localStorage.setItem('@HappyAdmin:Email', email)
-            localStorage.setItem('@HappyAdmin:Password', password)
-            
-            if(data.admin && data.admin.isAdmin === true){              
-              history.push('/app/dashboard')
-            }            
-            history.push(`dashboard/orphanage/edit/${data.orphanage.id}`)
-
-          }).catch(() => alert('Usuário ou senha inválidos!'))
-        }
-      }
-  }, [token, history, rememberMe])
+      setEmail(email!)
+      setRememberMe(true)
+    }
+  }, [token, rememberMe])
 
   const handleSignIn = (event: FormEvent) => {
     event.preventDefault()
@@ -76,16 +54,16 @@ const SignIn = () => {
         }      
     }).then(response => {
         const { data } = response  
-        console.log(data)                  
+
         localStorage.setItem('@HappyAdmin:Token', data.token)
         localStorage.setItem('@HappyAdmin:RememberMe', JSON.stringify(rememberMe))
         
         if(rememberMe === true){
-          localStorage.setItem('@HappyAdmin:Email', email)
-          localStorage.setItem('@HappyAdmin:Password', password)
+          localStorage.setItem('@HappyAdmin:Email', email)          
         }
 
         if(data.admin && data.admin.isAdmin === true){
+          localStorage.setItem('@HappyAdmin:isAdmin', JSON.stringify(data.admin.isAdmin))
           history.push('/app/dashboard')
           return 
         }   

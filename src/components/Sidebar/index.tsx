@@ -7,7 +7,17 @@ import { Container } from './styles'
 import mapMarkerImg from '../../assets/images/map-marker.svg';
 
 const Sidebar = () => {
-  const { goBack } = useHistory();
+  const history = useHistory();
+
+  const goBack = () => {
+    const isAdmin = localStorage.getItem('@HappyAdmin:isAdmin')
+    
+    if(isAdmin === 'true'){
+      return history.goBack()
+    }
+    localStorage.clear()
+    return history.push('/')    
+  }
   
   return (
     <Container>

@@ -30,7 +30,7 @@ const Routes = () => {
         <Route path="/app/sign-in"  component={SignIn} />
         <Route path="/app/dashboard" exact component={Dashboard} />
         <Route path="/app/dashboard/orphanage/revision/:id" component={OrphanageRevision} />
-        <Route path="/app/dashboard/orphanage/edit/:id" component={EditOrphanage} />
+        <Route path="/app/dashboard/orphanage/edit/:id/:auth" component={EditOrphanage} />
         <Route path="/app/dashboard/orphanage/remove/:name/:id" component={OrphanageRemoval} />
 
         <Route path="/app/password-forgot"  component={PasswordForgot} />

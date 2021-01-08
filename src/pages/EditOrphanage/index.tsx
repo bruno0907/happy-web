@@ -28,21 +28,7 @@ import { api } from "../../services/api";
 
 interface OrphanageParams{
   id: string;
-}
-
-interface OrphanageProps {
-  name: string;
-  about: string;
-  whatsapp: number;
-  instructions: string;
-  latitude: number;
-  longitude: number;  
-  opening_hours: string;
-  open_on_weekends: string;
-  images: Array<{
-    id: number;
-    url: string;
-  }>
+  auth: string;
 }
 
 interface OrphanageImages{
@@ -54,10 +40,10 @@ const EditOrphanage = () => {
   const history = useHistory()
   const params = useParams<OrphanageParams>()    
 
-  // Form States
   const [position, setPosition] = useState({ latitude: 0, longitude: 0})
   const [name, setName] = useState('')
   const [about, setAbout] = useState('')
+  const [email, setEmail] = useState('')
   const [whatsapp, setWhatsapp] = useState('')
   const [instructions, setInstructions] = useState('')
   const [opening_hours, setOpeningHours] = useState('')
@@ -65,38 +51,39 @@ const EditOrphanage = () => {
   
   const [selectedImages, setSelectedImages] = useState([])
   const [imagesPreview, setImagesPreview] = useState([])
-  const [orphanageImages, setOrphanageImages] = useState([])
-
-  const { id } = params
+  const [orphanageImages, setOrphanageImages] = useState([])  
+  
   const token = localStorage.getItem('@HappyAdmin:Token')  
+  const { id, auth } = params
 
   useEffect(() => {
-    if(!token){
-      history.push('/app/sign-in')
+    if(!token && !auth) return history.push('/app/sign-in')    
+
+    if(!token || auth){      
+      const [, token] = auth.split('=')
+      
+      // Add an API request to validate the token sending the token and the orphanage id
+      // and then saving it to the localStorage
+
+      localStorage.setItem('@HappyAdmin:Token', token)
     }
 
-    async function getOrphanage(){
-      const { id } = params
-      const response = await api.get(`orphanages/${id}`)
+    api.get(`orphanages/${id}`).then(response => {
       const { data } = response
-      
-      if(!data){
-        return
-      }
-      
+
       setPosition({ latitude: data.latitude, longitude: data.longitude})
       setName(data.name)      
       setAbout(data.about)
+      setEmail(data.email)
       setWhatsapp(data.whatsapp)
       setInstructions(data.instructions)
       setOpeningHours(data.opening_hours)
       setOpenOnWeekends(data.open_on_weekends)      
-      setOrphanageImages(data.images) // state that populates the orphanage images from database.
+      setOrphanageImages(data.images)
       
-    }
-    getOrphanage()
+    }).catch(error => console.log(error.message))
 
-  }, [params, token, history])   
+  }, [params, history, token, id, auth])   
 
   function handleMapClick(event: LeafletMouseEvent){
     const { lat, lng } = event.latlng
@@ -155,6 +142,7 @@ const EditOrphanage = () => {
     data.append('latitude', String(latitude))
     data.append('longitude', String(longitude))
     data.append('about', about)
+    data.append('email', email)
     data.append('whatsapp', whatsapp)
     data.append('instructions', instructions)
     data.append('opening_hours', opening_hours)
@@ -170,7 +158,12 @@ const EditOrphanage = () => {
     })
       .then(() => {
         alert('Cadastro atualizado com sucesso')
-        history.goBack()
+        
+        if(localStorage.getItem('@HappyAdmin:isAdmin') === 'true'){
+          return history.goBack()
+        }        
+        localStorage.clear()
+        return history.push('/')
       })
       .catch(() => alert('Houve um erro com seu cadastro'))    
   }
@@ -212,6 +205,13 @@ const EditOrphanage = () => {
               name="about"
               value={about}
               onChange={event => setAbout(event.target.value)}
+            />
+            <Input 
+              label="E-mail de contato"
+              type="email"
+              name="email"
+              value={email}
+              onChange={event => setEmail(event.target.value)}
             />
             <Input 
               label="Número do whatsapp"

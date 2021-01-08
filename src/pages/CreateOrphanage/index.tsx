@@ -28,20 +28,13 @@ import { api } from "../../services/api";
 
 const CreateOrphanage = () => {
   const history = useHistory()
-  // Geolocation location state
-  const [location, setLocation] = useState({ latitude: 0, longitude: 0})
   
-  // Form States
+  const [location, setLocation] = useState({ latitude: 0, longitude: 0})
   const [position, setPosition] = useState({ latitude: 0, longitude: 0})
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [password_verify, setPasswordVerify] = useState('')
   const [about, setAbout] = useState('')
   const [whatsapp, setWhatsapp] = useState('')
-  
-  // const [images, setImages] = useState<File[]>([])
-  // const [imagesPreview, setImagesPreview] = useState<string[]>([])
 
   const [selectedImages, setSelectedImages] = useState([])
   const [imagesPreview, setImagesPreview] = useState([])
@@ -54,7 +47,7 @@ const CreateOrphanage = () => {
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(position => {
       const { latitude, longitude } = position.coords
-      setLocation({latitude, longitude})
+      setLocation({ latitude, longitude })
     })
 
   }, [])
@@ -67,20 +60,6 @@ const CreateOrphanage = () => {
       longitude: lng
     })
   }
-
-  // const handleSelectImages = (event: ChangeEvent<HTMLInputElement>) => {
-  //   if(!event.target.files){
-  //     return
-  //   }
-
-  //   const selectedImages = Array.from(event.target.files)
-  //   setImages(selectedImages)
-
-  //   const selectedImagesPreview = selectedImages.map(
-  //     image => URL.createObjectURL(image)
-  //   )
-  //   setImagesPreview([...images, selectedImagesPreview] as [])
-  // }
 
   function handleSelectImages(event: ChangeEvent<HTMLInputElement>){    
     if(!event.target.files){
@@ -103,12 +82,10 @@ const CreateOrphanage = () => {
     const data = new FormData()
 
     data.append('name', name)
-    data.append('email', email)
-    data.append('password', password)
-    data.append('password_verify', password_verify)
     data.append('latitude', String(latitude))
     data.append('longitude', String(longitude))
     data.append('about', about)
+    data.append('email', email)
     data.append('whatsapp', whatsapp)
     data.append('instructions', instructions)
     data.append('opening_hours', opening_hours)
@@ -156,34 +133,20 @@ const CreateOrphanage = () => {
               name="name"
               value={name}
               onChange={event => setName(event.target.value)}
-            />
-            <Input 
-              label="E-mail"
-              name="email"
-              type="email"
-              value={email}
-              onChange={event => setEmail(event.target.value)}
-            />
-            <Input 
-              label="Senha"
-              name="password"
-              type="password"
-              value={password}
-              onChange={event => setPassword(event.target.value)}
-            />
-            <Input 
-              label="Repita sua senha"
-              name="password_verify"
-              type="password"
-              value={password_verify}
-              onChange={event => setPasswordVerify(event.target.value)}
-            />
+            />            
             <Textarea 
               label="Sobre"
               description="Máximo de 300 caracteres"
               name="about"
               value={about}
               onChange={event => setAbout(event.target.value)}
+            />
+            <Input 
+              label="E-mail de contato"
+              type="email"
+              name="email"
+              value={email}
+              onChange={event => setEmail(event.target.value)}
             />
             <Input 
               label="Número do whatsapp"
@@ -239,7 +202,13 @@ const CreateOrphanage = () => {
               </OpenOnWeekendsOptions>
             </OpenOnWeekendsSection>
           </FormSection>
-          <Button label="Confirmar" disabled={password_verify.length > 0 ? false : true}/>
+          <Button 
+            label="Confirmar" 
+            disabled={
+              (position.latitude < 0 && imagesPreview.length > 0)
+              ? false
+              : true              
+            }/>
         </CreateOrphanageForm>
       </Content>
     </Container>

@@ -57,6 +57,8 @@ const Dashboard = () => {
   const [approvedActive, setApprovedActive] = useState(false)
   const [pendingActive, setPendingActive] = useState(false)
   const [pageTitle, setPageTitle] = useState('Orfanatos Cadastrados')
+
+  const token = localStorage.getItem('@HappyAdmin:Token')
   
   useEffect(() => {
     api.get('/orphanages')
@@ -191,7 +193,7 @@ const Dashboard = () => {
                   <h3>{orphanage.name}</h3>
                   {orphanage.approved === true ? (
                     <>
-                      <Link to={`/app/dashboard/orphanage/edit/${orphanage.id}`}>
+                      <Link to={`/app/dashboard/orphanage/edit/${orphanage.id}/auth=${token}`}>
                         <FiEdit3 size={24} color="#15C3D6" />
                       </Link>
                       <Link to={`/app/dashboard/orphanage/remove/${orphanage.name}/${orphanage.id}`}>
