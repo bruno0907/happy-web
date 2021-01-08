@@ -37,8 +37,9 @@ const Routes = () => {
         <Route path="/app/new-password"  component={NewPassword} />
 
         <Route path="/orphanages/create/success" component={PageSuccess} />
+        <Route path="/404-page-not-found" component={PageNotFound} />
 
-        <Route component={PageNotFound} />
+        <Route path="*" component={PageNotFound} />
       </Switch>
     </BrowserRouter>
   )

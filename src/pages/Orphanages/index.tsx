@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { FaWhatsapp } from "react-icons/fa";
 import { FiClock, FiInfo } from "react-icons/fi";
 import { Map, Marker, TileLayer } from "react-leaflet";
-import { useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 
 import Sidebar from '../../components/Sidebar'
 import Divider from '../../components/Divider'
+import Loading from '../../components/Loading'
 
 import { 
   Container,
@@ -21,7 +22,7 @@ import {
   OpeningHours,
   OpenOnWeekends,
   DontOpenOnWeekends,
-  ContactButton
+  ContactButton,  
 } from './styles'
 
 import { happyMapIcon } from '../../utils/mapIcon'
@@ -49,26 +50,28 @@ interface OrphanageParams {
 
 export default function Orphanage() {  
   const params = useParams<OrphanageParams>()
+  const history = useHistory()
   const [orphanage, setOrphanage] = useState<OrphanageProps>()
   const [activeImageIndex, setActiveImageIndex] = useState(0)
   
-  const googleMapsLink = 'https://www.google.com/maps/dir/?api=1&destination='
+  const googleMapsLink = 'https://www.google.com/maps/dir/?api=1&destination='  
 
   useEffect(() => {
-    api.get(`orphanages/${params.id}`)
-      .then(response => setOrphanage(response.data))
-      .catch(error => console.error(error.message))
-  }, [params.id])
+    const { id } = params
 
-  if(!orphanage){
-    return(
-      <p>Carregando...</p>
-    )
-  }  
+    api.get(`orphanages/${id}`)
+      .then(({ data }) => setOrphanage(data))
+      .catch(() => {
+        return history.push('/404-page-not-found')
+      })
+  }, [params, history])  
 
   return (
     <Container>            
       <Sidebar />
+      { !orphanage ? 
+        <Loading text="Carregando..."/>
+        : 
       <Main>
         <OrphanageDetails>
         { orphanage.images.length <= 0 ? null : 
@@ -149,6 +152,7 @@ export default function Orphanage() {
           </OrphanageDetailsContent>
         </OrphanageDetails>
       </Main>
+    }
     </Container>
   );
 }

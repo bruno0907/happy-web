@@ -62,8 +62,8 @@ const Dashboard = () => {
   
   useEffect(() => {
     api.get('/orphanages')
-      .then(response => {             
-        setAllOrphanages(response.data)        
+      .then(({ data }) => {             
+        setAllOrphanages(data)        
       })
       .catch(error => console.log(error.message))
 
@@ -129,7 +129,7 @@ const Dashboard = () => {
   }
 
   return(
-    <Container>
+    <Container>      
       <SideBar>
         <img src={mapMarker} alt="Happy"/>
         <SidebarButtons>
