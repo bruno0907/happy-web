@@ -2,11 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
 import { Map, TileLayer, Marker } from 'react-leaflet'
-
 import Divider from '../../components/Divider';
-
 import { happyMapIcon } from '../../utils/mapIcon'
-
 import happyIconNoRegister from '../../assets/images/happyIcon-noregister.svg'
 
 import { 
@@ -61,7 +58,7 @@ const Dashboard = () => {
   const token = localStorage.getItem('@HappyAdmin:Token')
   
   useEffect(() => {
-    api.get('/orphanages')
+    api.get('orphanages')
       .then(({ data }) => {             
         setAllOrphanages(data)        
       })
@@ -90,7 +87,7 @@ const Dashboard = () => {
   const hasPendingApproval = Boolean(pendingApprovalOrphanages.length > 0)
 
 
-  function handleApprovedFilter(){
+  const handleApprovedFilter = () => {
     if(approvedActive === false){
       setApprovedActive(true)
       setPageTitle('Cadastros Aprovados')      
@@ -105,7 +102,7 @@ const Dashboard = () => {
     return
   }
   
-  function handlePendingFilter(){
+  const handlePendingFilter = () => {
     if(pendingActive === false){
       setPendingActive(true)
       setPageTitle('Cadastros Pendentes')      
@@ -120,12 +117,12 @@ const Dashboard = () => {
     return
   } 
 
-  function handleSignout(){    
+  const handleSignout = () => {    
     localStorage.removeItem ('@HappyAdmin:RememberMe')
     localStorage.removeItem('@HappyAdmin:Token')
     localStorage.removeItem('@HappyAdmin:Password')
     localStorage.removeItem('@HappyAdmin:Email')
-    history.push('/app/sign-in')
+    return history.push('sign-in')
   }
 
   return(
@@ -161,15 +158,14 @@ const Dashboard = () => {
           <Divider />
 
           <Body>
-          { orphanages.length < 1 ? (
-            <NoRegisterFound>
-              <img src={happyIconNoRegister} alt="Nenhum registro encontrado"/>
-              <p>Nenhum registro encontrado</p>
-            </NoRegisterFound>
-          ) :
-          
-          orphanages.map((orphanage: OrphanageProps) => 
-            <OrphanageCard key={orphanage.id} approved={orphanage.approved}>
+            { orphanages.length < 1 ? (
+              <NoRegisterFound>
+                <img src={happyIconNoRegister} alt="Nenhum registro encontrado"/>
+                <p>Nenhum registro encontrado</p>
+              </NoRegisterFound>
+            ) :            
+            orphanages.map((orphanage: OrphanageProps) => 
+              <OrphanageCard key={orphanage.id} approved={orphanage.approved}>
                 <header>
                   <Map 
                     center={[orphanage.latitude, orphanage.longitude]}
@@ -193,25 +189,22 @@ const Dashboard = () => {
                   <h3>{orphanage.name}</h3>
                   {orphanage.approved === true ? (
                     <>
-                      <Link to={`/app/dashboard/orphanage/edit/${orphanage.id}/auth=${token}`}>
+                      <Link to={`dashboard/orphanage/edit/${orphanage.id}/auth=${token}`}>
                         <FiEdit3 size={24} color="#15C3D6" />
                       </Link>
-                      <Link to={`/app/dashboard/orphanage/remove/${orphanage.name}/${orphanage.id}`}>
+                      <Link to={`dashboard/orphanage/remove/${orphanage.name}/${orphanage.id}`}>
                         <FiTrash size={24} color="#15C3D6" />
                       </Link>
                     </>
                   ) : (
-                    <Link to={`/app/dashboard/orphanage/revision/${orphanage.id}`}>
+                    <Link to={`dashboard/orphanage/revision/${orphanage.id}`}>
                     <FiArrowRight size={24} color="#15C3D6" />
                   </Link>
                   )
                   }
                 </footer>
-              </OrphanageCard>                  
-            
-          )}
-
-            
+              </OrphanageCard>    
+            )}
           </Body>
         </Wrapper>
 

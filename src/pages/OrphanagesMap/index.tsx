@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { FiPlus, FiArrowRight } from 'react-icons/fi'
 import { Map, TileLayer, Marker, Popup } from 'react-leaflet'
 
@@ -28,6 +28,8 @@ interface OrphanageProps {
 }
 
 const OrphanagesMap = () => {   
+  const history = useHistory()
+
   const [orphanages, setOrphanages] = useState<OrphanageProps[]>([])
   const [location, setLocation] = useState({
     latitude: 0,
@@ -35,21 +37,27 @@ const OrphanagesMap = () => {
   })
   
   useEffect(() => {
-    
-    api.get('/orphanages')
-    .then(response => {
-      const { data } = response
+    const getOrphanages = async() => {
+      const orphanages = await api.get('orphanages')
+      
+      if(!orphanages) return history.push('/404-page-not-found')
+
+      const { data } = orphanages
+
       const orphanagesToShow = data.filter((orphanage: OrphanageProps) => orphanage.approved === true)
       setOrphanages(orphanagesToShow)
-    })
-    .catch(error => console.error(error.message))  
+    }
+    getOrphanages()
   
-    navigator.geolocation.getCurrentPosition(position => {
-      const { latitude, longitude } = position.coords
-      setLocation({latitude, longitude})
-    })
+    const getUserLocation = () => {
+      navigator.geolocation.getCurrentPosition(position => {
+        const { latitude, longitude } = position.coords
+        return setLocation({latitude, longitude})
+      })
+    }
+    getUserLocation()
     
-  }, []);
+  }, [history]);
 
   return (
     <Container>

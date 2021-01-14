@@ -45,10 +45,13 @@ const CreateOrphanage = () => {
 
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(position => {
-      const { latitude, longitude } = position.coords
-      setLocation({ latitude, longitude })
-    })
+    const getUserLocation = () => {
+      navigator.geolocation.getCurrentPosition(position => {
+        const { latitude, longitude } = position.coords
+        return setLocation({latitude, longitude})
+      })
+    }
+    getUserLocation()
 
   }, [])
 
@@ -75,7 +78,7 @@ const CreateOrphanage = () => {
     
   }
 
-  function handleSubmit(event: FormEvent){
+  const handleSubmit = async(event: FormEvent) => {
     event.preventDefault()
 
     const { latitude, longitude } = position
@@ -93,14 +96,12 @@ const CreateOrphanage = () => {
     
     const images = selectedImages.map(image => image[0])    
     images.forEach(image => data.append('images', image))  
-    
-    api.post('orphanages', data)
-      .then(() => {        
-        history.push('/orphanages/create/success')
-      })
-      .catch(() => {
-        alert('Houve um erro com seu cadastro')        
-      })    
+
+    const response = await api.post('orphanages', data)
+
+    if(!response) return alert('Houve um erro com seu cadastro')
+
+    return history.push('/orphanages/create/success')
   }
 
   return (

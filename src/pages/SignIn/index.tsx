@@ -47,7 +47,7 @@ const SignIn = () => {
   const handleSignIn = (event: FormEvent) => {
     event.preventDefault()
 
-    api.get('app/authenticate', {
+    api.get('sign-in', {
         auth: {
           username: email,
           password
@@ -64,7 +64,7 @@ const SignIn = () => {
 
         if(data.admin && data.admin.isAdmin === true){
           localStorage.setItem('@HappyAdmin:isAdmin', JSON.stringify(data.admin.isAdmin))
-          history.push('/app/dashboard')
+          history.push('dashboard')
           return 
         }   
 
@@ -79,8 +79,6 @@ const SignIn = () => {
       <Hero>
         <img src={Happy} alt="Happy" />
       </Hero>
-
-
       <FormAside>
         <GoBack onClick={() => history.push('/')}>
           <FiArrowLeft size={24} color="15C3D6" />
@@ -115,7 +113,7 @@ const SignIn = () => {
                 <div></div>
                 <span>Lembrar-me</span>
               </label>
-              <Link to="/app/password-forgot">Esqueci minha senha</Link>
+              <Link to="password-forgot">Esqueci minha senha</Link>
             </RememberMe> 
 
             <Button label="Entrar" />

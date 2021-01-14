@@ -67,30 +67,36 @@ export default function OrphanageRevision() {
     return <p>Carregando...</p>
   }
 
-  async function handleOrphanageApproval() {
+  const handleOrphanageApproval = async() => {
     const { id } = params
     const token = localStorage.getItem('@HappyAdmin:Token')      
-    return await api.patch(`app/orphanages/approve/${id}`, {      
+    return await api.patch(`orphanages/approve/${id}`, {      
       approved: true
     }, {
       headers: {
         authorization: `Bearer ${token}`
       }
     })
-      .then(() => history.push('/app/dashboard'))
-      .catch(error => console.log(error.message))
+      .then(() => history.push('/dashboard'))
+      .catch(error => {        
+        console.log(error.message)
+        alert('Um erro ocorreu ao aprovar este orfanato.')
+      })
   }
 
-  async function handleOrphanageRejection() {
+  const handleOrphanageRejection = async() => {
     const { id } = params
     const token = localStorage.getItem('@HappyAdmin:Token')      
-    return await api.get(`app/orphanages/reject/${id}`, {
+    return await api.get(`orphanages/reject/${id}`, {
       headers: {
         authorization: `Bearer ${token}`
       }
     })
-      .then(() => history.push('/app/dashboard'))
-      .catch(error => console.log(error.message))
+      .then(() => history.push('/dashboard'))
+      .catch(error => {
+        console.log(error.message)
+        alert('Um erro ocorreu ao rejeitar este orfanato.')
+      })
   }
 
   return (

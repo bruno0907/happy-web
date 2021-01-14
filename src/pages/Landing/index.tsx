@@ -28,8 +28,8 @@ const Landing = () => {
           </ContentMain>
         </LeftSide>
         <RightSide>          
-          <EnterRestrictAreaButton as={Link} to="/app/sign-in">Acesso Restrito</EnterRestrictAreaButton>                    
-          <EnterAppButton as={Link} to="/orphanages">
+          <EnterRestrictAreaButton as={Link} to="sign-in">Acesso Restrito</EnterRestrictAreaButton>                    
+          <EnterAppButton as={Link} to="orphanages">
             <FiArrowRight />
           </EnterAppButton>          
         </RightSide>

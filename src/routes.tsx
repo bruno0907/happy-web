@@ -27,14 +27,14 @@ const Routes = () => {
         <Route path="/orphanages" exact component={OrphanagesMap} />
         <Route path="/orphanages/create/" exact component={CreateOrphanage} />
         <Route path="/orphanages/:id" exact component={Orphanages} />
-        <Route path="/app/sign-in"  component={SignIn} />
-        <Route path="/app/dashboard" exact component={Dashboard} />
-        <Route path="/app/dashboard/orphanage/revision/:id" component={OrphanageRevision} />
-        <Route path="/app/dashboard/orphanage/edit/:id/:auth" component={EditOrphanage} />
-        <Route path="/app/dashboard/orphanage/remove/:name/:id" component={OrphanageRemoval} />
+        <Route path="/sign-in"  component={SignIn} />
+        <Route path="/dashboard" exact component={Dashboard} />
+        <Route path="/dashboard/orphanage/revision/:id" component={OrphanageRevision} />
+        <Route path="/dashboard/orphanage/edit/:id/:auth" component={EditOrphanage} />
+        <Route path="/dashboard/orphanage/remove/:name/:id" component={OrphanageRemoval} />
 
-        <Route path="/app/password-forgot"  component={PasswordForgot} />
-        <Route path="/app/new-password"  component={NewPassword} />
+        <Route path="/password-forgot"  component={PasswordForgot} />
+        <Route path="/new-password"  component={NewPassword} />
 
         <Route path="/orphanages/create/success" component={PageSuccess} />
         <Route path="/404-page-not-found" component={PageNotFound} />
