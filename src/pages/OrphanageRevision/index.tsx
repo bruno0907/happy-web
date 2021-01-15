@@ -181,7 +181,7 @@ export default function OrphanageRevision() {
           <ApprovalSection>
             <RefuseButton onClick={handleOrphanageRejection}>
               <FiXCircle size={24} color="#FFF" />
-              Rejeitar
+              Recusar
             </RefuseButton>
             <AcceptButton onClick={handleOrphanageApproval}>
             <FiCheck size={24} color="#FFF" />

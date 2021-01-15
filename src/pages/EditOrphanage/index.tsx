@@ -54,19 +54,18 @@ const EditOrphanage = () => {
   const [orphanageImages, setOrphanageImages] = useState([])  
   
   const token = localStorage.getItem('@HappyAdmin:Token')  
-  const { id, auth } = params
+  
+  const { id } = params
 
   useEffect(() => {
-    if(!token && !auth) return history.push('/app/sign-in')    
-
-    if(!token || auth){      
-      const [, token] = auth.split('=')
-      
-      // Add an API request to validate the token sending the token and the orphanage id
-      // and then saving it to the localStorage
-
-      localStorage.setItem('@HappyAdmin:Token', token)
-    }
+    // console.log(params)
+    // if(!token && !auth) return history.push('/sign-in') 
+    
+    // if(!token && auth) {
+    //   console.log(auth)
+    //   return
+    // }
+    // Tratar o param auth que virá do link enviado por email
 
     api.get(`orphanages/${id}`).then(response => {
       const { data } = response
@@ -83,7 +82,7 @@ const EditOrphanage = () => {
       
     }).catch(error => console.log(error.message))
 
-  }, [params, history, token, id, auth])   
+  }, [id])   
 
   function handleMapClick(event: LeafletMouseEvent){
     const { lat, lng } = event.latlng
@@ -117,18 +116,18 @@ const EditOrphanage = () => {
   }
 
   function handleOrphanageImageRemoval(imageId: number){
-    api.delete(`app/orphanages/image/remove/${imageId}`, {
+    api.delete(`orphanages/image/remove/${imageId}`, {
       headers: {
         authorization: `Bearer ${token}`
       }
     })
       .then(() => {
         const remainingImages = orphanageImages.filter(
-            (image: OrphanageImages) => image.id !== imageId      
+          (image: OrphanageImages) => image.id !== imageId      
         )
         return setOrphanageImages(remainingImages)
       })
-      .catch(error => console.log(error))       
+      .catch(() => alert('Houve um erro ao excluir a foto.'))       
     return
   }
 
@@ -151,21 +150,16 @@ const EditOrphanage = () => {
     const images = selectedImages.map(image => image[0])    
     images.forEach(image => data.append('images', image))    
 
-    api.patch(`/app/orphanages/update/${id}`, data, {
+    api.patch(`/orphanages/update/${id}`, data, {
       headers: {
         authorization: `Bearer ${token}`
       }
-    })
-      .then(() => {
-        alert('Cadastro atualizado com sucesso')
-        
-        if(localStorage.getItem('@HappyAdmin:isAdmin') === 'true'){
-          return history.goBack()
-        }        
+    }).then(() => { alert('Cadastro atualizado com sucesso')        
+        if(localStorage.getItem('@HappyAdmin:isAdmin') === 'true') return history.goBack()
+
         localStorage.clear()
         return history.push('/')
-      })
-      .catch(() => alert('Houve um erro com seu cadastro'))    
+      }).catch(() => alert('Houve um erro ao atualizar seu cadastro.'))    
   }
 
   return (
@@ -291,4 +285,3 @@ const EditOrphanage = () => {
 }
 
 export default EditOrphanage
-

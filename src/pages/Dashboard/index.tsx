@@ -32,6 +32,7 @@ import {
 
 import mapMarker from '../../assets/images/map-marker.svg'
 import { api } from '../../services/api';
+import Loading from '../../components/Loading';
 
 interface OrphanageProps {
   id: number;
@@ -54,17 +55,35 @@ const Dashboard = () => {
   const [approvedActive, setApprovedActive] = useState(false)
   const [pendingActive, setPendingActive] = useState(false)
   const [pageTitle, setPageTitle] = useState('Orfanatos Cadastrados')
-
+  const [loading, setLoading] = useState(true)
+  
   const token = localStorage.getItem('@HappyAdmin:Token')
   
-  useEffect(() => {
-    api.get('orphanages')
-      .then(({ data }) => {             
-        setAllOrphanages(data)        
-      })
-      .catch(error => console.log(error.message))
+  useEffect(() => {       
+    if(!token) return history.push('/sign-in')
 
-    }, [])     
+    if(token){
+      api.get('me', {
+        headers: {
+          authorization: `Bearer ${token}`
+        }
+      }).then(response => {
+        response.status === 200 && getOrphanages()
+      })
+        .catch(error => {
+          console.error(error)
+          return history.push('/sign-in')
+        })
+    }
+
+    const getOrphanages = async() => {      
+      const response = await api.get('orphanages')
+      const { data } = response
+      setAllOrphanages(data)
+      return setLoading(false)
+    }    
+
+  }, [history, token])     
     
   useMemo(() => {
     setOrphanages(allOrphanages)
@@ -117,98 +136,101 @@ const Dashboard = () => {
     return
   } 
 
-  const handleSignout = () => {    
-    localStorage.removeItem ('@HappyAdmin:RememberMe')
+  const handleSignout = () => {        
     localStorage.removeItem('@HappyAdmin:Token')
-    localStorage.removeItem('@HappyAdmin:Password')
-    localStorage.removeItem('@HappyAdmin:Email')
     return history.push('sign-in')
   }
 
   return(
-    <Container>      
-      <SideBar>
-        <img src={mapMarker} alt="Happy"/>
-        <SidebarButtons>
-          <ApprovedButton 
-            active={approvedActive} 
-            onClick={handleApprovedFilter}
-          >
-            <FiMapPin size={24} />
-          </ApprovedButton>
-          <PendingButton 
-            hasPending={hasPendingApproval} 
-            active={pendingActive}
-            onClick={handlePendingFilter}
-          >
-            <FiAlertCircle size={24} />
-          </PendingButton>
-        </SidebarButtons>
-        <Logout onClick={handleSignout}>
-          <FiPower size={24} />
-        </Logout>
-      </SideBar>
-      <Main>
-        <Wrapper>
-          <Header>
-            <h1>{pageTitle}</h1>
-            <span>{orphanagesCount} orfanatos</span>
-          </Header>
-          
-          <Divider />
+    <Container>
+      { loading === true ? 
+        <Loading text="Carregando..."/>
+      : 
+      <>
+        <SideBar>
+          <img src={mapMarker} alt="Happy"/>
+          <SidebarButtons>
+            <ApprovedButton 
+              active={approvedActive} 
+              onClick={handleApprovedFilter}
+            >
+              <FiMapPin size={24} />
+            </ApprovedButton>
+            <PendingButton 
+              hasPending={hasPendingApproval} 
+              active={pendingActive}
+              onClick={handlePendingFilter}
+            >
+              <FiAlertCircle size={24} />
+            </PendingButton>
+          </SidebarButtons>
+          <Logout onClick={handleSignout}>
+            <FiPower size={24} />
+          </Logout>
+        </SideBar>
+        <Main>
+          <Wrapper>
+            <Header>
+              <h1>{pageTitle}</h1>
+              <span>{orphanagesCount} orfanatos</span>
+            </Header>
+            
+            <Divider />
 
-          <Body>
-            { orphanages.length < 1 ? (
-              <NoRegisterFound>
-                <img src={happyIconNoRegister} alt="Nenhum registro encontrado"/>
-                <p>Nenhum registro encontrado</p>
-              </NoRegisterFound>
-            ) :            
-            orphanages.map((orphanage: OrphanageProps) => 
-              <OrphanageCard key={orphanage.id} approved={orphanage.approved}>
-                <header>
-                  <Map 
-                    center={[orphanage.latitude, orphanage.longitude]}
-                    zoom={15}
-                    style={{width: '100%', height: '100%'}}
-                    dragging={false}
-                    zoomControl={false}
-                    scrollWheelZoom={false}
-                  >                    
-                    <TileLayer 
-                      url={`https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`} 
-                    />                
-                    <Marker
-                      position={[orphanage.latitude, orphanage.longitude]}
-                      icon={happyMapIcon}
-                      interactive={false}
-                    />
-                  </Map>
-                </header>
-                <footer>
-                  <h3>{orphanage.name}</h3>
-                  {orphanage.approved === true ? (
-                    <>
-                      <Link to={`dashboard/orphanage/edit/${orphanage.id}/auth=${token}`}>
-                        <FiEdit3 size={24} color="#15C3D6" />
-                      </Link>
-                      <Link to={`dashboard/orphanage/remove/${orphanage.name}/${orphanage.id}`}>
-                        <FiTrash size={24} color="#15C3D6" />
-                      </Link>
-                    </>
-                  ) : (
-                    <Link to={`dashboard/orphanage/revision/${orphanage.id}`}>
-                    <FiArrowRight size={24} color="#15C3D6" />
-                  </Link>
-                  )
-                  }
-                </footer>
-              </OrphanageCard>    
-            )}
-          </Body>
-        </Wrapper>
+            <Body>
+              { orphanages.length < 1 ? (
+                <NoRegisterFound>
+                  <img src={happyIconNoRegister} alt="Nenhum registro encontrado"/>
+                  <p>Nenhum registro encontrado</p>
+                </NoRegisterFound>
+              ) :            
+              orphanages.map((orphanage: OrphanageProps) => 
+                <OrphanageCard key={orphanage.id} approved={orphanage.approved}>
+                  <header>
+                    <Map 
+                      center={[orphanage.latitude, orphanage.longitude]}
+                      zoom={15}
+                      style={{width: '100%', height: '100%'}}
+                      dragging={false}
+                      zoomControl={false}
+                      scrollWheelZoom={false}
+                    >                    
+                      <TileLayer 
+                        url={`https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`} 
+                      />                
+                      <Marker
+                        position={[orphanage.latitude, orphanage.longitude]}
+                        icon={happyMapIcon}
+                        interactive={false}
+                      />
+                    </Map>
+                  </header>
+                  <footer>
+                    <h3>{orphanage.name}</h3>
+                    {orphanage.approved === true ? (
+                      <>
+                        <Link to={`dashboard/orphanage/edit/${orphanage.id}`}>
+                          <FiEdit3 size={24} color="#15C3D6" />
+                        </Link>
+                        <Link to={`dashboard/orphanage/remove/${orphanage.name}/${orphanage.id}`}>
+                          <FiTrash size={24} color="#15C3D6" />
+                        </Link>
+                      </>
+                    ) : (
+                      <Link to={`dashboard/orphanage/revision/${orphanage.id}`}>
+                      <FiArrowRight size={24} color="#15C3D6" />
+                    </Link>
+                    )
+                    }
+                  </footer>
+                </OrphanageCard>    
+              )}
+            </Body>
+          </Wrapper>
 
-      </Main>
+        </Main>
+      </>
+    }      
     </Container>
   );
 }

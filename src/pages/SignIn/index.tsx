@@ -25,16 +25,9 @@ const SignIn = () => {
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')  
-  const [rememberMe, setRememberMe] = useState(false)
-
-  const token = localStorage.getItem('@HappyAdmin:Token')  
+  const [rememberMe, setRememberMe] = useState(false)  
 
   useEffect(() => {
-    if(!token){
-      localStorage.clear()      
-      return
-    }  
-
     const remember = localStorage.getItem('@HappyAdmin:RememberMe')
     
     if(remember === 'true'){      
@@ -42,7 +35,7 @@ const SignIn = () => {
       setEmail(email!)
       setRememberMe(true)
     }
-  }, [token, rememberMe])
+  }, [rememberMe])
 
   const handleSignIn = (event: FormEvent) => {
     event.preventDefault()
@@ -58,19 +51,9 @@ const SignIn = () => {
         localStorage.setItem('@HappyAdmin:Token', data.token)
         localStorage.setItem('@HappyAdmin:RememberMe', JSON.stringify(rememberMe))
         
-        if(rememberMe === true){
-          localStorage.setItem('@HappyAdmin:Email', email)          
-        }
+        rememberMe === true && localStorage.setItem('@HappyAdmin:Email', email)       
 
-        if(data.admin && data.admin.isAdmin === true){
-          localStorage.setItem('@HappyAdmin:isAdmin', JSON.stringify(data.admin.isAdmin))
-          history.push('dashboard')
-          return 
-        }   
-
-        history.push(`dashboard/orphanage/edit/${data.orphanage.id}`)  
-        return  
-
+        return history.push('/dashboard')
       }).catch(() => alert('Usuário ou senha inválidos!'))
   }
 
