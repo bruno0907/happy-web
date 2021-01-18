@@ -24,16 +24,16 @@ const Routes = () => {
       <Switch>
         <Route path="/" exact component={Landing} />
         <Route path="/orphanages" exact component={OrphanagesMap} />
-        <Route path="/orphanages/create/" component={CreateOrphanage} />
-        <Route path="/orphanages/:id" component={Orphanages} />        
-        
-        <Route path="/orphanages/edit/:id" component={EditOrphanage} />
+        <Route path="/orphanages/create" exact component={CreateOrphanage} />
+        <Route path="/orphanages/:id" exact component={Orphanages} />        
 
         <Route path="/sign-in" component={SignIn} />
        
         <Route path="/dashboard" exact component={Dashboard} />
         <Route path="/dashboard/orphanage/revision/:id" component={OrphanageRevision} />
-        <Route path="/dashboard/orphanage/edit/:id" component={EditOrphanage} />
+
+        <Route path={["/orphanages/edit/:id/:auth", "/dashboard/orphanage/edit/:id"]} exact component={EditOrphanage} />
+
         <Route path="/dashboard/orphanage/remove/:name/:id" component={OrphanageRemoval} />
 
         <Route path="/password-forgot" component={PasswordForgot} />

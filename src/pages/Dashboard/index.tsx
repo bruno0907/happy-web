@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
 import { Map, TileLayer, Marker } from 'react-leaflet'
@@ -63,17 +63,14 @@ const Dashboard = () => {
     if(!token) return history.push('/sign-in')
 
     if(token){
-      api.get('me', {
+      api.get('authenticate', {
         headers: {
           authorization: `Bearer ${token}`
         }
       }).then(response => {
         response.status === 200 && getOrphanages()
-      })
-        .catch(error => {
-          console.error(error)
-          return history.push('/sign-in')
-        })
+
+      }).catch(() => history.push('/sign-in'))
     }
 
     const getOrphanages = async() => {      
@@ -81,9 +78,12 @@ const Dashboard = () => {
       const { data } = response
       setAllOrphanages(data)
       return setLoading(false)
+      
     }    
 
   }, [history, token])     
+
+  const orphanagesCount = allOrphanages.length
     
   useMemo(() => {
     setOrphanages(allOrphanages)
@@ -99,12 +99,9 @@ const Dashboard = () => {
     }
 
   }, [allOrphanages, approvedActive, pendingActive])
-  
-  const orphanagesCount = allOrphanages.length
 
   const pendingApprovalOrphanages = allOrphanages.filter(orphanage => orphanage.approved === false)
   const hasPendingApproval = Boolean(pendingApprovalOrphanages.length > 0)
-
 
   const handleApprovedFilter = () => {
     if(approvedActive === false){
@@ -114,11 +111,8 @@ const Dashboard = () => {
       setApprovedActive(false) 
       setPageTitle('Orfanatos Cadastros')
     }
-
-    if(pendingActive === true){
-      setPendingActive(false)   
-    }     
-    return
+    
+    return pendingActive === true && setPendingActive(false)   
   }
   
   const handlePendingFilter = () => {
@@ -130,14 +124,12 @@ const Dashboard = () => {
       setPageTitle('Orfanatos Cadastros')
     }
 
-    if(approvedActive === true){
-      setApprovedActive(false)    
-    }
-    return
+    return approvedActive === true && setApprovedActive(false)
   } 
 
   const handleSignout = () => {        
     localStorage.removeItem('@HappyAdmin:Token')
+    localStorage.removeItem('@HappyAdmin:isAdmin')
     return history.push('sign-in')
   }
 

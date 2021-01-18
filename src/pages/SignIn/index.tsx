@@ -25,7 +25,7 @@ const SignIn = () => {
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')  
-  const [rememberMe, setRememberMe] = useState(false)  
+  const [rememberMe, setRememberMe] = useState(false)    
 
   useEffect(() => {
     const remember = localStorage.getItem('@HappyAdmin:RememberMe')
@@ -36,6 +36,15 @@ const SignIn = () => {
       setRememberMe(true)
     }
   }, [rememberMe])
+
+  const handleRememberMe = () => {    
+    if(rememberMe === true){
+      localStorage.removeItem('@HappyAdmin:RememberMe')
+      setRememberMe(false)      
+    }     
+    setRememberMe(!rememberMe)
+    return
+  }
 
   const handleSignIn = (event: FormEvent) => {
     event.preventDefault()
@@ -50,6 +59,7 @@ const SignIn = () => {
 
         localStorage.setItem('@HappyAdmin:Token', data.token)
         localStorage.setItem('@HappyAdmin:RememberMe', JSON.stringify(rememberMe))
+        localStorage.setItem('@HappyAdmin:isAdmin', data.admin.isAdmin)
         
         rememberMe === true && localStorage.setItem('@HappyAdmin:Email', email)       
 
@@ -90,8 +100,8 @@ const SignIn = () => {
                 <input 
                   type="checkbox" 
                   id="rememberMe" 
-                  checked={rememberMe}
-                  onChange={event => setRememberMe(event.target.checked)}
+                  checked={rememberMe}                  
+                  onChange={handleRememberMe}                  
                 />
                 <div></div>
                 <span>Lembrar-me</span>

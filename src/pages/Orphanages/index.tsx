@@ -52,7 +52,7 @@ export default function Orphanage() {
   const params = useParams<OrphanageParams>()
   const history = useHistory()
   const [orphanage, setOrphanage] = useState<OrphanageProps>()
-  const [activeImageIndex, setActiveImageIndex] = useState(0)
+  const [activeImageIndex, setActiveImageIndex] = useState(0)  
   
   const googleMapsLink = 'https://www.google.com/maps/dir/?api=1&destination='  
 
@@ -60,99 +60,101 @@ export default function Orphanage() {
     const { id } = params
 
     api.get(`orphanages/${id}`)
-      .then(({ data }) => setOrphanage(data))
-      .catch(() => {
-        return history.push('/404-page-not-found')
+      .then(({ data }) => {
+        setOrphanage(data)
       })
+      .catch(() => history.push('/404-page-not-found'))
   }, [params, history])  
 
   return (
     <Container>            
-      <Sidebar />
       { !orphanage ? 
-        <Loading text="Carregando..."/>
+          <Loading text="Carregando..."/>
         : 
-      <Main>
-        <OrphanageDetails>
-        { orphanage.images.length <= 0 ? null : 
-            <>
-              <img src={orphanage.images[activeImageIndex].url} alt={orphanage.name} />
+          <>
+            <Sidebar />
+            <Main>
+              <OrphanageDetails>
+            { orphanage.images.length <= 0 ? null : 
+                <>
+                  <img src={orphanage.images[activeImageIndex].url} alt={orphanage.name} />
 
-              <ImageGallery>
-                {orphanage.images.map((image, index) => (
-                  <ImageGalleryButtons 
-                    key={image.id}                 
-                    active={activeImageIndex === index ? true : false}
-                    type="button" 
-                    onClick={() => setActiveImageIndex(index)}
+                  <ImageGallery>
+                    {orphanage.images.map((image, index) => (
+                      <ImageGalleryButtons 
+                        key={image.id}                 
+                        active={activeImageIndex === index ? true : false}
+                        type="button" 
+                        onClick={() => setActiveImageIndex(index)}
+                      >
+                        <img src={image.url} alt={orphanage.name} />
+                      </ImageGalleryButtons>
+                    ))}           
+                  </ImageGallery> 
+                </>    
+              }          
+              <OrphanageDetailsContent>
+                <h1>{orphanage.name}</h1>
+                <p>{orphanage.about}</p>
+                <MapContainer>
+                  <Map 
+                    center={[orphanage.latitude, orphanage.longitude]} 
+                    zoom={16} 
+                    style={{ width: '100%', height: 280 }}
+                    dragging={false}
+                    touchZoom={false}
+                    zoomControl={false}
+                    scrollWheelZoom={false}
+                    doubleClickZoom={false}
                   >
-                    <img src={image.url} alt={orphanage.name} />
-                  </ImageGalleryButtons>
-                ))}           
-              </ImageGallery> 
-            </>    
-          }          
-          <OrphanageDetailsContent>
-            <h1>{orphanage.name}</h1>
-            <p>{orphanage.about}</p>
-            <MapContainer>
-              <Map 
-                center={[orphanage.latitude, orphanage.longitude]} 
-                zoom={16} 
-                style={{ width: '100%', height: 280 }}
-                dragging={false}
-                touchZoom={false}
-                zoomControl={false}
-                scrollWheelZoom={false}
-                doubleClickZoom={false}
-              >
-                <TileLayer 
-                  url={`https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`}
-                />
-                <Marker interactive={false} icon={happyMapIcon} position={[orphanage.latitude, orphanage.longitude]} />
-              </Map>
-              <footer>
-                <a target="_blank" rel="noopener noreferrer" href={`${googleMapsLink}${orphanage.latitude},${orphanage.longitude}`}>Ver rotas no Google Maps</a>
-              </footer>
-            </MapContainer>
-            <Divider />
-            <InstructionTitle>Instruções para visita</InstructionTitle>
-            <InstructionDetails>{orphanage.instructions}</InstructionDetails>
-            <OrphanageOpenDetails>
-              <OpeningHours>
-                <FiClock size={32} color="#15B6D6" />
-                Segunda à Sexta <br />
-                {orphanage.opening_hours}
-              </OpeningHours>
-              { orphanage.open_on_weekends 
-                ? (
-                    <OpenOnWeekends>
-                      <FiInfo size={32} color="#39CC83" />
-                      Atendemos <br />
-                      fim de semana
-                    </OpenOnWeekends>
-                )
-                : (
-                    <DontOpenOnWeekends>
-                      <FiInfo size={32} color="#FF669D" />
-                      Não atendemos <br />
-                      fim de semana
-                    </DontOpenOnWeekends>
-                  )
-              }
-            </OrphanageOpenDetails>
-            <ContactButton href={`https://api.whatsapp.com/send?phone=55${orphanage.whatsapp}&text=Olá ${orphanage.name}. Quero visitar vocês!`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="contact-button"              
-            >
-              <FaWhatsapp size={20} color="#FFF" />
-              Entrar em contato
-            </ContactButton>
-          </OrphanageDetailsContent>
-        </OrphanageDetails>
-      </Main>
-    }
+                    <TileLayer 
+                      url={`https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`}
+                    />
+                    <Marker interactive={false} icon={happyMapIcon} position={[orphanage.latitude, orphanage.longitude]} />
+                  </Map>
+                  <footer>
+                    <a target="_blank" rel="noopener noreferrer" href={`${googleMapsLink}${orphanage.latitude},${orphanage.longitude}`}>Ver rotas no Google Maps</a>
+                  </footer>
+                </MapContainer>
+                <Divider />
+                <InstructionTitle>Instruções para visita</InstructionTitle>
+                <InstructionDetails>{orphanage.instructions}</InstructionDetails>
+                <OrphanageOpenDetails>
+                  <OpeningHours>
+                    <FiClock size={32} color="#15B6D6" />
+                    Segunda à Sexta <br />
+                    {orphanage.opening_hours}
+                  </OpeningHours>
+                  { orphanage.open_on_weekends 
+                    ? (
+                        <OpenOnWeekends>
+                          <FiInfo size={32} color="#39CC83" />
+                          Atendemos <br />
+                          fim de semana
+                        </OpenOnWeekends>
+                    )
+                    : (
+                        <DontOpenOnWeekends>
+                          <FiInfo size={32} color="#FF669D" />
+                          Não atendemos <br />
+                          fim de semana
+                        </DontOpenOnWeekends>
+                      )
+                  }
+                </OrphanageOpenDetails>
+                <ContactButton href={`https://api.whatsapp.com/send?phone=55${orphanage.whatsapp}&text=Olá ${orphanage.name}. Quero visitar vocês!`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="contact-button"              
+                >
+                  <FaWhatsapp size={20} color="#FFF" />
+                  Entrar em contato
+                </ContactButton>
+              </OrphanageDetailsContent>
+            </OrphanageDetails>
+            </Main>
+          </>
+      }
     </Container>
   );
 }

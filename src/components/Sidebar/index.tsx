@@ -7,17 +7,9 @@ import { Container } from './styles'
 import mapMarkerImg from '../../assets/images/map-marker.svg';
 
 const Sidebar = () => {
-  const history = useHistory();
-
-  const goBack = () => {
-    const isAdmin = localStorage.getItem('@HappyAdmin:isAdmin')
-    
-    if(isAdmin === 'true'){
-      return history.goBack()
-    }
-    localStorage.clear()
-    return history.push('/')    
-  }
+  const history = useHistory(); 
+  
+  const goBack = () => history.goBack()
   
   return (
     <Container>
@@ -25,6 +17,7 @@ const Sidebar = () => {
           <img src={mapMarkerImg} alt="Happy" />        
         </Link>
         <button type="button" onClick={goBack}>
+          
           <FiArrowLeft size={24} color="#FFF" />
         </button>        
     </Container>
