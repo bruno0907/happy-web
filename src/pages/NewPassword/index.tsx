@@ -34,7 +34,7 @@ const NewPassword = () => {
       password,
       password_verify      
     }    
-    api.patch('app/admin/new-password', data, {
+    api.patch('new-password', data, {
       headers: {
         authorization: `Bearer ${token}`
       }

@@ -1,4 +1,4 @@
-import React, { useState, FormEvent, ChangeEvent, useEffect, useRef } from "react";
+import React, { useState, FormEvent, ChangeEvent, useEffect } from "react";
 import { useHistory, useParams } from 'react-router-dom'
 import { Map, Marker, TileLayer } from 'react-leaflet';
 import { LeafletMouseEvent } from 'leaflet'
@@ -91,9 +91,7 @@ const EditOrphanage = () => {
       
     }).catch(error => console.log(error.message))
 
-  }, [id, history, token, auth])   
-
-  const orphanageName = name
+  }, [id, history, token, auth])     
 
   const handleMapClick = (event: LeafletMouseEvent) => {
     const { lat, lng } = event.latlng

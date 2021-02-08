@@ -20,15 +20,18 @@ import { api } from '../../services/api';
 const PasswordForgot = () => {
   const history = useHistory()
 
-  const [email, setEmail] = useState('')
+  const [email, setEmail] = useState('')   
+
+  const evalEmail = !Boolean(email.length > 0)
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()  
 
-    api.post('/app/admin/password-recovery', {
+    api.post('password-recovery', {
       email
     })
-      .then(() => {        
+      .then(() => {     
+        
         alert(`Um email foi enviado para ${email}. Verifique sua caixa de entrada para redefinir sua senha.`)
         localStorage.removeItem('@HappyAdmin:Token')
         localStorage.removeItem('@HappyAdmin:Email')
@@ -36,7 +39,9 @@ const PasswordForgot = () => {
         localStorage.removeItem('@HappyAdmin:RememberMe')
         history.push('sign-in')
       })
-      .catch(error => console.log(error.message))
+      .catch(() => {
+        alert('E-mail não encontrado')
+      })
   }
 
   return (
@@ -44,8 +49,6 @@ const PasswordForgot = () => {
       <Hero>
         <img src={Happy} alt="Happy" />
       </Hero>
-
-
       <FormAside>
         <GoBack onClick={() => history.goBack()}>
           <FiArrowLeft size={24} color="15C3D6" />
@@ -53,8 +56,7 @@ const PasswordForgot = () => {
         <form onSubmit={handleSubmit}>
           <fieldset>
             <legend>Esqueci a senha</legend>
-            <p>Sua redefinição de senha será enviada para o e-mail cadastrado.</p>
-          
+            <p>Sua redefinição de senha será enviada para o e-mail cadastrado.</p>          
             <Input     
               label="E-mail"      
               name="email"
@@ -62,9 +64,7 @@ const PasswordForgot = () => {
               value={email}
               onChange={event => setEmail(event.target.value)}
             />
-
-            <Button label="Enviar" />
-
+            <Button label="Enviar" disabled={evalEmail}/>
           </fieldset>
 
         </form>
