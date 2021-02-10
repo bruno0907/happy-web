@@ -128,9 +128,14 @@ const Dashboard = () => {
   } 
 
   const handleSignout = () => {        
-    localStorage.removeItem('@HappyAdmin:Token')
-    localStorage.removeItem('@HappyAdmin:isAdmin')
-    return history.push('sign-in')
+    const rememberMe = localStorage.getItem('@HappyAdmin:RememberMe')
+
+    if(rememberMe && rememberMe === 'true'){
+      return history.push('/')
+    }
+
+    localStorage.clear()
+    history.push('/')
   }
 
   return(

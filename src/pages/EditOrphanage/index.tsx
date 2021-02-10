@@ -160,11 +160,15 @@ const EditOrphanage = () => {
       headers: {
         authorization: `Bearer ${token}`
       }
-    }).then(() => { alert('Cadastro atualizado com sucesso')        
-        localStorage.getItem('@HappyAdmin:isAdmin') === 'true' && history.goBack()
+    }).then(() => { 
+        alert('Cadastro atualizado com sucesso')
+        if(auth){
+          localStorage.clear()
+          history.push('/')
+          return
+        }
+        history.push('/dashboard')
 
-        localStorage.clear()
-        history.push('/')
       }).catch(() => alert('Houve um erro ao atualizar seu cadastro.'))    
   }
 

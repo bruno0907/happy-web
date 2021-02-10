@@ -1,4 +1,4 @@
-import React, { InputHTMLAttributes, useState } from 'react';
+import React, { InputHTMLAttributes, useState, useEffect, useRef } from 'react';
 
 import { 
   Container 
@@ -11,31 +11,44 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;  
   name: string;
   type?: string;  
+  error?: boolean;
+  errorMessage?: string;
 }
 
-const Input: React.FC<InputProps> = ({ name, type, label, ...rest}) => { 
+const Input: React.FC<InputProps> = ({ name, type, label, error, errorMessage, autoFocus, ...rest}) => { 
   const [ inputType, setInputType ] = useState( type )
-  const [ toggleVisibility, setToggleVisibility ] = useState(type === 'password')
-    
+  const [ toggleVisibility, setToggleVisibility ] = useState(type === 'password')    
+  
+  const inputRef = useRef<HTMLInputElement>(null)
+
   const inputId = `id_${name}`          
   
   const handleTogglePassword = () => {
       setToggleVisibility(!toggleVisibility)
       setInputType( toggleVisibility ? 'text' : 'password' )
-  }        
+  }  
+  
+  useEffect(() => { 
+    if(error) inputRef.current?.focus()
+  }, [error])
 
   return (
-    <Container>
+    <Container hasError={error}>
       <label htmlFor={label}>{label}</label>
       <input         
         type={ inputType || 'text' }
         id={inputId}  
         name={name}              
-        placeholder={name}                
-        {...rest}           
+        placeholder={name}     
+        ref={inputRef}           
+        {...rest}
+        autoFocus={autoFocus}                
       />
       { type === 'password' &&  
         <img src={ toggleVisibility ? eye : eyeOff } alt="Show password" onClick={handleTogglePassword}/>
+      }
+      { error && 
+        <span>{errorMessage}</span>
       }
     </Container>
   );

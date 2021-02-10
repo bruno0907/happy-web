@@ -1,6 +1,6 @@
 import React, { FormEvent, useEffect, useState } from 'react';
-
-import { useHistory } from 'react-router-dom'
+import jwt_decode from 'jwt-decode'
+import { useHistory, Link } from 'react-router-dom'
 
 import Input from '../../components/Input'
 import Button from '../../components/Button'
@@ -16,9 +16,16 @@ import {
 } from './styles';
 
 import Happy from '../../assets/images/logo.svg'
-import { Link } from 'react-router-dom';
 
 import { api } from '../../services/api';
+
+interface AuthProps{
+  username: string;
+  password: string;
+}
+
+const token = localStorage.getItem('@HappyAdmin:Token')
+const remember = localStorage.getItem('@HappyAdmin:RememberMe')
 
 const SignIn = () => {
   const history = useHistory()
@@ -26,17 +33,20 @@ const SignIn = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')  
   const [rememberMe, setRememberMe] = useState(false)    
+  const [errorHandling, setErrorHandling] = useState(false)   
 
-  useEffect(() => {
-    const remember = localStorage.getItem('@HappyAdmin:RememberMe')
-    
-    if(remember === 'true'){      
-      const email = localStorage.getItem('@HappyAdmin:Email')
-      setEmail(email!)
-      setRememberMe(true)
-    }
+  useEffect(() => {    
+    if(token){
+      remember === 'true' && setRememberMe(true)
+  
+      const jwt = jwt_decode(token) as AuthProps  
+  
+      setEmail(jwt.username)
+      setPassword(jwt.password)
+    }  
+
   }, [rememberMe])
-
+  
   const handleRememberMe = () => {    
     if(rememberMe === true){
       localStorage.removeItem('@HappyAdmin:RememberMe')
@@ -55,16 +65,23 @@ const SignIn = () => {
           password
         }      
     }).then(response => {
-        const { data } = response  
+        const { data } = response        
+        const jwt = jwt_decode(data) as AuthProps   
+           
+        setEmail(jwt.username)
+        setPassword(jwt.password)
 
-        localStorage.setItem('@HappyAdmin:Token', data.token)
-        localStorage.setItem('@HappyAdmin:RememberMe', JSON.stringify(rememberMe))
-        localStorage.setItem('@HappyAdmin:isAdmin', data.admin.isAdmin)
-        
-        rememberMe === true && localStorage.setItem('@HappyAdmin:Email', email)       
+        localStorage.setItem('@HappyAdmin:Token', data)
+
+        rememberMe && localStorage.setItem('@HappyAdmin:RememberMe', JSON.stringify(rememberMe))  
 
         return history.push('/dashboard')
-      }).catch(() => alert('Usuário ou senha inválidos!'))
+      }).catch(() => {
+        setErrorHandling(true)        
+        setPassword('')   
+        setRememberMe(false)
+        
+      })
   }
 
   return (
@@ -78,14 +95,17 @@ const SignIn = () => {
         </GoBack>
         <form  onSubmit={handleSignIn}>
           <fieldset>
-            <legend>Fazer login</legend>
-          
+            <legend>Fazer login</legend>          
             <Input     
               label="E-mail"      
               name="email"
               type="email"
               value={email}
               onChange={event => setEmail(event.target.value)}
+              error={errorHandling}
+              errorMessage="Usuário ou senha inválidos"        
+              onKeyUp={() => setErrorHandling(false)}    
+              autoFocus                         
             />
             <Input 
               label="Password"
@@ -93,6 +113,7 @@ const SignIn = () => {
               type="password" 
               value={password}   
               onChange={event => setPassword(event.target.value)}
+              onKeyUp={() => setErrorHandling(false)}   
             />
 
             <RememberMe>
