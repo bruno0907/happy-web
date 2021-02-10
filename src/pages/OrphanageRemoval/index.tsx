@@ -20,12 +20,12 @@ const OrphanageRemoval = () => {
   const token = localStorage.getItem('@HappyAdmin:Token')    
 
   async function handleOrphanageRemove(){
-    await api.delete(`/app/orphanages/delete/${id}`, {
+    await api.delete(`orphanages/delete/${id}`, {
       headers: {
         authorization: `Bearer ${token}`
       }
     })
-      .then(() => history.push('/app/dashboard'))
+      .then(() => history.push('/dashboard'))
       .catch(error => console.log(error.message))
   }
 

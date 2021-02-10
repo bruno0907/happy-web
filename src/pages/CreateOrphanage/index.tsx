@@ -1,9 +1,9 @@
-import React, { useState, FormEvent, ChangeEvent, useEffect } from "react";
+import React, { useState, FormEvent, ChangeEvent, useEffect, MouseEvent } from "react";
 import { useHistory } from 'react-router-dom'
 import { Map, Marker, TileLayer } from 'react-leaflet';
 import { LeafletMouseEvent } from 'leaflet'
 
-import { FiPlus } from "react-icons/fi";
+import { FiPlus, FiX } from "react-icons/fi";
 
 import Sidebar from "../../components/Sidebar";
 import Textarea from "../../components/Textarea";
@@ -35,9 +35,8 @@ const CreateOrphanage = () => {
   const [email, setEmail] = useState('')
   const [about, setAbout] = useState('')
   const [whatsapp, setWhatsapp] = useState('')
-
-  const [selectedImages, setSelectedImages] = useState([])
-  const [imagesPreview, setImagesPreview] = useState([])
+  
+  const [selectedImages, setSelectedImages] = useState([])    
 
   const [instructions, setInstructions] = useState('')
   const [opening_hours, setOpeningHours] = useState('')
@@ -51,7 +50,7 @@ const CreateOrphanage = () => {
         return setLocation({latitude, longitude})
       })
     }
-    getUserLocation()
+    getUserLocation()          
 
   }, [])
 
@@ -64,18 +63,27 @@ const CreateOrphanage = () => {
     })
   }
 
-  function handleSelectImages(event: ChangeEvent<HTMLInputElement>){    
-    if(!event.target.files){
-      return
-    }
-    const selectedImage = Array.from(event.target.files)    
-    setSelectedImages([...selectedImages, selectedImage] as []) // images state to populate database
+
+  const handleSelectImages = (event: ChangeEvent<HTMLInputElement>) => {    
+    if(!event.target.files) return
+    const newImage = event.target.files
     
-    const selectedImagesPreview = selectedImage.map(
-      (image: File) => URL.createObjectURL(image)
-    )
-    setImagesPreview([...imagesPreview, selectedImagesPreview] as []) // images state to populate the preview    
+    // Array to populate the DB
+    const selectedImage = Array.from(newImage)        
     
+    setSelectedImages([...selectedImages, selectedImage] as [])    
+    return 
+  }
+
+  const handleRemoveImage = (imageToRemove: File) => {
+    const remainingImages = selectedImages.filter((imageOnArray: File) => imageOnArray !== imageToRemove)        
+    setSelectedImages(remainingImages)    
+    return 
+  }
+
+  const onInputClick = (event: MouseEvent<HTMLInputElement>) => {
+    const element = event.target as HTMLInputElement
+    element.value = ''
   }
 
   const handleSubmit = async(event: FormEvent) => {
@@ -102,6 +110,7 @@ const CreateOrphanage = () => {
     if(!response) return alert('Houve um erro com seu cadastro')
 
     return history.push('/orphanages/create/success')
+    
   }
 
   return (
@@ -156,22 +165,32 @@ const CreateOrphanage = () => {
               value={whatsapp}
               onChange={event => setWhatsapp(event.target.value)}
             />
+
             <ImageSection>
               <label htmlFor="images">Fotos</label>
               <ImagesContainer>
-                {imagesPreview.map(image => 
-                  <img key={image} src={image} alt={image} /> 
+                
+                {selectedImages.map((image: File | any) => 
+                  <picture key={Math.random()}>
+                    <img src={URL.createObjectURL(image[0])} alt={image.name} /> 
+                    <span onClick={() => handleRemoveImage(image)}>
+                      <FiX size={23} color=" #D6487B" />
+                    </span>
+                  </picture>
                 )}
-                <AddImage htmlFor="image[]">
+
+                <AddImage htmlFor="image">
                   <FiPlus size={24} color="#15b6d6" />
                 </AddImage>
               <input                  
                 type="file" 
-                id="image[]"
-                onChange={handleSelectImages}
+                id="image"
+                onChange={handleSelectImages}                
+                onClick={onInputClick}
               />
               </ImagesContainer>
             </ImageSection>
+
           </FormSection>
           <FormSection>
             <legend>Visitação</legend>
@@ -206,7 +225,7 @@ const CreateOrphanage = () => {
           <Button 
             label="Confirmar" 
             disabled={
-              (position.latitude < 0 && imagesPreview.length > 0)
+              (position.latitude < 0 && selectedImages.length > 0)
               ? false
               : true              
             }/>
