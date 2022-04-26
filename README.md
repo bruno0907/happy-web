@@ -1,44 +1,15 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Happy - NLW by Rocketseat
+### Happy is an app to help connect people to foster homes. It's inspiration came from Children's day and it was developed through NextLevelWeek by [Rocketseat](https://www.rocketseat.com.br/)
 
-## Available Scripts
+![home](https://user-images.githubusercontent.com/54812906/165398531-7274761d-ae44-48bd-bac0-d5641cbc862b.jpg)
 
-In the project directory, you can run:
+### Screenshots
+[main](https://user-images.githubusercontent.com/54812906/165398532-e5ad208b-65d4-4229-88a5-ad00cb9a5571.jpg)
 
-### `yarn start`
+[orphanage](https://user-images.githubusercontent.com/54812906/165398535-05656912-3072-43d8-a5c2-66134b811c48.jpg)
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+[orphanage_admin](https://user-images.githubusercontent.com/54812906/165398524-77118ff1-8032-4db5-9ce6-b3b504a5fbf2.jpg)
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+[dashboard](https://user-images.githubusercontent.com/54812906/165398528-b2e13123-a7dd-42e0-9f2b-65a9d03ab646.jpg)
 
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+[dashboard_orphanage_not_found](https://user-images.githubusercontent.com/54812906/165398529-50fe798c-e5ee-4787-8fdb-967c461aeb3b.jpg)
